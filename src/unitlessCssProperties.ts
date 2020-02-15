@@ -1,4 +1,4 @@
-let unitlessKeys = {
+export default {
   animationIterationCount: 1,
   borderImageOutset: 1,
   borderImageSlice: 1,
@@ -36,7 +36,6 @@ let unitlessKeys = {
   zIndex: 1,
   zoom: 1,
   WebkitLineClamp: 1,
-
   // SVG-related properties
   fillOpacity: 1,
   floodOpacity: 1,
@@ -47,5 +46,3 @@ let unitlessKeys = {
   strokeOpacity: 1,
   strokeWidth: 1
 };
-
-export default unitlessKeys;
