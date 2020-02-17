@@ -58,7 +58,7 @@ let styleElement: HTMLStyleElement | undefined;
 
 const alreadyCreatedClassNames: Record<string, true> = {};
 
-export const useStyle = (
+export const useCss = (
   systemObject: SystemStyleObject,
   theme: Theme,
   deps?: any[]

@@ -9,7 +9,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-scripts": "3.4.0",
-    "use-style": "myagoo/use-style.git"
+    "@css-system/use-css": "0.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

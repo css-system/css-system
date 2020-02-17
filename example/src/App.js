@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState
 } from "react";
-import { useStyle } from "use-style";
+import { useCss } from "@css-system/use-css";
 
 const theme = {
   breakpoints: ["40em", "52em", "64em"],
@@ -86,7 +86,7 @@ const View = ({ as: Component = "div", css, ...props }) => {
 
   const theme = useContext(ThemeContext);
 
-  const className = useStyle(
+  const className = useCss(
     gap
       ? {
           ...otherCssProps,
@@ -101,7 +101,7 @@ const View = ({ as: Component = "div", css, ...props }) => {
 
 const Text = ({ as: Component = "span", css, ...props }) => {
   const theme = useContext(ThemeContext);
-  const className = useStyle(
+  const className = useCss(
     {
       display: "inline-flex",
       minWidth: 0,

@@ -1,5 +1,6 @@
 {
-  "name": "@myagoo/use-style",
+  "name": "@css-system/use-css",
+  "license": "MIT",
   "version": "0.1.0",
   "main": "dist/index.js",
   "dependencies": {
