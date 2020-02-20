@@ -1,7 +1,5 @@
 import React, {Context} from "react"
 
-const StyleSheetContext: Context<ServerStyleSheet> = React.createContext(null)
-
 class ClientStyleSheet {
   sheet: CSSStyleSheet
 
@@ -33,5 +31,13 @@ class ServerStyleSheet {
     return this.rules
   }
 }
+
+const isBrowser = typeof document !== "undefined"
+
+const StyleSheetContext: Context<
+  ServerStyleSheet | ClientStyleSheet
+> = React.createContext(
+  isBrowser ? new ClientStyleSheet() : new ServerStyleSheet()
+)
 
 export {ServerStyleSheet, ClientStyleSheet, StyleSheetContext}

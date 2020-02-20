@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "hash-sum": "^2.0.0",
-    "styled-system": "^5.1.4"
+    "@styled-system/css": "^5.1.4"
   },
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0",
