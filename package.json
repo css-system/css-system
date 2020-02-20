@@ -1,24 +1,52 @@
 {
   "name": "@css-system/use-css",
-  "license": "MIT",
   "version": "0.1.0",
+  "license": "MIT",
+  "repository": "css-system/use-css",
+  "homepage": "https://css-system.github.io/use-css",
   "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "jsnext:main": "dist/index.es.js",
+  "typings": "dist/index.d.ts",
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "start": "rollup -c -w",
+    "prepare": "yarn run build",
+    "predeploy": "cd example && yarn install && yarn run build",
+    "deploy": "gh-pages -d example/build"
+  },
   "dependencies": {
     "hash-sum": "^2.0.0",
     "styled-system": "^5.1.4"
   },
+  "peerDependencies": {
+    "react": "^15.0.0 || ^16.0.0",
+    "react-dom": "^15.0.0 || ^16.0.0"
+  },
   "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/runtime": "^7.8.4",
     "@types/hash-sum": "^1.0.0",
     "@types/react": "^16.9.19",
+    "@types/react-dom": "^16.0.5",
     "@types/styled-system__css": "^5.0.4",
-    "react": "^16.8.0",
+    "cross-env": "^7.0.0",
+    "gh-pages": "^2.2.0",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "rollup": "^1.31.1",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-peer-deps-external": "^2.2.0",
+    "rollup-plugin-typescript2": "^0.26.0",
     "typescript": "^3.7.5"
   },
-  "peerDependencies": {
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
-  },
-  "scripts": {
-    "prepublish": "tsc"
-  }
+  "files": [
+    "dist"
+  ]
 }

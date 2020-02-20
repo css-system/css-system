@@ -1,24 +1,23 @@
 {
-  "name": "example",
-  "version": "0.1.0",
+  "name": "use-css-example",
+  "homepage": "https://css-system.github.io/use-css",
+  "version": "0.0.0",
+  "license": "MIT",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-scripts": "3.4.0",
-    "@css-system/use-css": "0.1.0"
+    "@babel/preset-env": "^7.8.4",
+    "@babel/register": "^7.8.3",
+    "@css-system/use-css": "link:..",
+    "express": "^4.17.1",
+    "react": "link:../node_modules/react",
+    "react-dom": "link:../node_modules/react-dom",
+    "react-scripts": "^3.4.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "yarn build && node server/bootstrap",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [
