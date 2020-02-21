@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "ES2015",
-    "strict": true,
-    "declaration": true,
-    "outDir": "./dist",
+    "module": "ESNext",
+    "target": "ES5",
+    "lib": ["DOM"],
     "sourceMap": true,
-    "lib": ["DOM", "ES2015"],
-    "esModuleInterop": true
+    "declaration": true,
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/*"],
+  "exclude": ["node_modules", "build", "dist", "example", "rollup.config.js"]
 }
