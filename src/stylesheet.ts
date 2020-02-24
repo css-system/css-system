@@ -2,6 +2,7 @@ import React, {Context} from "react"
 
 class ClientStyleSheet {
   sheet: CSSStyleSheet
+  createdClassNames: Record<string, true> = {}
 
   constructor() {
     const element = document.createElement("style")
@@ -17,18 +18,11 @@ class ClientStyleSheet {
 }
 
 class ServerStyleSheet {
-  rules: string[]
-
-  constructor() {
-    this.rules = []
-  }
+  rules: string[] = []
+  createdClassNames: Record<string, true> = {}
 
   insertRule(rule: string) {
     this.rules.push(rule)
-  }
-
-  getRules() {
-    return this.rules
   }
 }
 

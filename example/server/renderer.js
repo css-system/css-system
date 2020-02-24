@@ -14,7 +14,7 @@ export const renderer = (req, res, next) => {
     </StyleSheetContext.Provider>
   )
 
-  const styleTag = `<style>${stylesheet.getRules().join(" ")}</style>`
+  const styleTag = `<style>${stylesheet.rules.join(" ")}</style>`
 
   const html = fs
     .readFileSync(path.join(__dirname, "..", "build", "index.html"), "utf8")

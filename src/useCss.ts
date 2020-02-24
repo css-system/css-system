@@ -55,8 +55,6 @@ const stylesObjectToRulesObjects = (cssObject: CSSObject): any => {
   return rulesObjects
 }
 
-const alreadyCreatedClassNames: Record<string, true> = {}
-
 export const useCss = (
   systemObject: SystemStyleObject,
   theme: Theme,
@@ -69,7 +67,7 @@ export const useCss = (
     const hash = sum(styleObject)
     const className = `style-${hash}`
 
-    if (!alreadyCreatedClassNames[className]) {
+    if (!styleSheet.createdClassNames[className]) {
       const styleRulesObject = stylesObjectToRulesObjects(styleObject)
 
       const rulesKeys = Object.keys(styleRulesObject).sort((a, b) =>
@@ -97,7 +95,7 @@ export const useCss = (
         }
       }
 
-      alreadyCreatedClassNames[className] = true
+      styleSheet.createdClassNames[className] = true
     }
 
     return className
