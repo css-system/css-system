@@ -2,7 +2,7 @@ import {useCss} from "@css-system/use-css"
 import React, {createContext, useContext, useState} from "react"
 
 const theme = {
-  breakpoints: ["40em", "52em", "64em"],
+  breakpoints: {s: "40em", m: "52em", l: "64em"},
   colors: {
     black: "#000e1a",
     white: "#fff",
@@ -15,7 +15,7 @@ const theme = {
 const ThemeContext = createContext(theme)
 
 const createGapRules = (flexDirection, gap) => {
-  if (!Array.isArray(flexDirection)) {
+  if (typeof flexDirection === "string") {
     const isDirectionVertical =
       flexDirection === "column" || flexDirection === "column-reverse"
 
@@ -29,34 +29,55 @@ const createGapRules = (flexDirection, gap) => {
   let lastFlexDirection
   let lastGap
 
-  const gaps = Array.isArray(gap) ? gap : [gap]
+  const gaps = typeof gap === "object" ? gap : {_: gap}
   const flexDirections = flexDirection
+  const mergedBreakpoints = [
+    ...new Set([...Object.keys(flexDirections), ...Object.keys(gaps)]),
+  ]
 
-  const breakpointsLength = Math.max(flexDirections.length, gaps.length)
-
-  const marginTops = new Array(breakpointsLength)
-  const marginLefts = new Array(breakpointsLength)
-
-  for (let index = 0; index < breakpointsLength; index++) {
+  const marginTops = {}
+  const marginLefts = {}
+  console.log(flexDirections, gaps)
+  for (const mergedBreakpoint of mergedBreakpoints) {
     const directionForCurrentBreakPoint =
-      flexDirections[index] != null ? flexDirections[index] : lastFlexDirection
+      flexDirections[mergedBreakpoint] != null
+        ? flexDirections[mergedBreakpoint]
+        : lastFlexDirection
     lastFlexDirection = directionForCurrentBreakPoint
+    console.log(
+      "directionForCurrentBreakPoint",
+      mergedBreakpoint,
+      directionForCurrentBreakPoint
+    )
 
-    const gapForCurrentBreakpoint = gaps[index] != null ? gaps[index] : lastGap
+    const gapForCurrentBreakpoint =
+      gaps[mergedBreakpoint] != null ? gaps[mergedBreakpoint] : lastGap
     lastGap = gapForCurrentBreakpoint
+
+    console.log(
+      "gapForCurrentBreakpoint",
+      mergedBreakpoint,
+      gapForCurrentBreakpoint
+    )
 
     const isDirectionVertical =
       directionForCurrentBreakPoint === "column" ||
       directionForCurrentBreakPoint === "column-reverse"
 
     if (isDirectionVertical) {
-      marginTops[index] = gapForCurrentBreakpoint
-      marginLefts[index] = 0
+      marginTops[mergedBreakpoint] = gapForCurrentBreakpoint
+      marginLefts[mergedBreakpoint] = 0
     } else {
-      marginTops[index] = 0
-      marginLefts[index] = gapForCurrentBreakpoint
+      marginLefts[mergedBreakpoint] = gapForCurrentBreakpoint
+      marginTops[mergedBreakpoint] = 0
     }
   }
+
+  console.log({
+    mt: marginTops,
+    ml: marginLefts,
+  })
+
   return {
     "& > * + *": {
       mt: marginTops,
@@ -118,8 +139,8 @@ export default function App() {
   return (
     <View
       css={{
-        flexDirection: ["column", "row"],
-        gap: [10, 20, 30],
+        flexDirection: {s: "column", l: "row"},
+        gap: {m: 20},
       }}
     >
       {items.map(id => {
@@ -131,10 +152,10 @@ export default function App() {
               gap: 3,
               bg: "yellow",
               p: 10,
-              "&:hover": {bg: ["red", "blue", "green"]},
+              "&:hover": {bg: {_: "red", s: "blue", m: "green"}},
             }}
           >
-            <Text css={{flex: ["1", "none"]}}>{id}</Text>
+            <Text css={{flex: {_: "1", s: "none"}}}>{id}</Text>
             <button onClick={() => setItems(items.filter(ts => ts !== id))}>
               x
             </button>
@@ -147,7 +168,7 @@ export default function App() {
           gap: 3,
           bg: "blue",
           p: 10,
-          "&:hover": {bg: ["red", "blue", "green"]},
+          "&:hover": {bg: {_: "red", s: "blue", m: "green"}},
         }}
       >
         Text

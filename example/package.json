@@ -15,6 +15,7 @@
     "react-scripts": "^3.4.0"
   },
   "scripts": {
+    "dev": "react-scripts start",
     "start": "yarn build && node server/bootstrap",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
