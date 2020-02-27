@@ -1,6 +1,7 @@
 # css-system/use-css
 
 A react hook for building versatile design primitives.
+It follow the (theme ui specifications)[https://github.com/system-ui/theme-specification].
 
 ## Example
 
