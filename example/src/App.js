@@ -4,17 +4,20 @@ import React, {createContext, useContext, useState} from "react"
 const theme = {
   breakpoints: {s: "40em", m: "52em", l: "64em"},
   colors: {
-    black: "#000e1a",
-    white: "#fff",
-    blue: "#007ce0",
-    primary: "#004175",
+    primary: "red",
+    secondary: "green",
+    accent: "blue",
+    button: {
+      bg: "white",
+      color: "black",
+    },
   },
   space: [0, 4, 8, 16, 32],
 }
 
 const ThemeContext = createContext(theme)
 
-const createGapRules = (flexDirection, gap) => {
+const createGapRules = (flexDirection, gap, theme) => {
   if (typeof flexDirection === "string") {
     const isDirectionVertical =
       flexDirection === "column" || flexDirection === "column-reverse"
@@ -31,34 +34,31 @@ const createGapRules = (flexDirection, gap) => {
 
   const gaps = typeof gap === "object" ? gap : {_: gap}
   const flexDirections = flexDirection
-  const mergedBreakpoints = [
-    ...new Set([...Object.keys(flexDirections), ...Object.keys(gaps)]),
-  ]
+  const mergedBreakpointsSet = new Set([
+    ...Object.keys(flexDirections),
+    ...Object.keys(gaps),
+  ])
 
   const marginTops = {}
   const marginLefts = {}
-  console.log(flexDirections, gaps)
-  for (const mergedBreakpoint of mergedBreakpoints) {
+  const themeBreakpoints = ["_", ...Object.keys(theme.breakpoints)]
+
+  for (const themeBreakpoint of themeBreakpoints) {
+    if (mergedBreakpointsSet.has(themeBreakpoint) === false) {
+      continue
+    }
+
+    const mergedBreakpoint = themeBreakpoint
+
     const directionForCurrentBreakPoint =
       flexDirections[mergedBreakpoint] != null
         ? flexDirections[mergedBreakpoint]
         : lastFlexDirection
     lastFlexDirection = directionForCurrentBreakPoint
-    console.log(
-      "directionForCurrentBreakPoint",
-      mergedBreakpoint,
-      directionForCurrentBreakPoint
-    )
 
     const gapForCurrentBreakpoint =
       gaps[mergedBreakpoint] != null ? gaps[mergedBreakpoint] : lastGap
     lastGap = gapForCurrentBreakpoint
-
-    console.log(
-      "gapForCurrentBreakpoint",
-      mergedBreakpoint,
-      gapForCurrentBreakpoint
-    )
 
     const isDirectionVertical =
       directionForCurrentBreakPoint === "column" ||
@@ -72,11 +72,6 @@ const createGapRules = (flexDirection, gap) => {
       marginTops[mergedBreakpoint] = 0
     }
   }
-
-  console.log({
-    mt: marginTops,
-    ml: marginLefts,
-  })
 
   return {
     "& > * + *": {
@@ -92,7 +87,6 @@ const View = ({as: Component = "div", css, ...props}) => {
     minWidth: 0,
     minHeight: 0,
     flex: "none",
-    alignSelf: "auto",
     alignItems: "stretch",
     flexDirection: "column",
     justifyContent: "flex-start",
@@ -105,7 +99,7 @@ const View = ({as: Component = "div", css, ...props}) => {
     gap
       ? {
           ...otherCssProps,
-          ...createGapRules(otherCssProps.flexDirection, gap),
+          ...createGapRules(otherCssProps.flexDirection, gap, theme),
         }
       : otherCssProps,
     theme
@@ -122,7 +116,6 @@ const Text = ({as: Component = "span", css, ...props}) => {
       minWidth: 0,
       minHeight: 0,
       flex: "none",
-      alignSelf: "auto",
       alignItems: "stretch",
       flexDirection: "row",
       justifyContent: "flex-start",
@@ -133,14 +126,46 @@ const Text = ({as: Component = "span", css, ...props}) => {
 
   return <Component className={className} {...props} />
 }
+
+const Button = ({as: Component = "button", css, ...props}) => {
+  const theme = useContext(ThemeContext)
+  const className = useCss(
+    {
+      py: {_: 1, m: 2},
+      px: {_: 2, m: 3},
+      bg: "button.bg",
+      border: "2px solid",
+      borderColor: "button.color",
+      color: "button.color",
+      minWidth: 0,
+      minHeight: 0,
+      flex: "none",
+      cursor: "pointer",
+      "&:active": {
+        borderColor: "button.bg",
+        bg: "button.color",
+        color: "button.bg",
+      },
+      "&:disabled": {
+        cursor: "not-allowed",
+        opacity: 0.5,
+      },
+      ...css,
+    },
+    theme
+  )
+
+  return <Component className={className} {...props} />
+}
+
 export default function App() {
   const [items, setItems] = useState([])
 
   return (
     <View
       css={{
-        flexDirection: {s: "column", l: "row"},
-        gap: {m: 20},
+        flexDirection: {_: "column", m: "row"},
+        gap: {_: 0, s: 1, m: 2, l: 3},
       }}
     >
       {items.map(id => {
@@ -149,30 +174,29 @@ export default function App() {
             key={id}
             css={{
               flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
               gap: 3,
-              bg: "yellow",
               p: 10,
-              "&:hover": {bg: {_: "red", s: "blue", m: "green"}},
+              bg: "grey",
+              "&:hover": {
+                bg: {_: "#55F04A", s: "secondary", m: "accent", l: "#00A265"},
+              },
             }}
           >
-            <Text css={{flex: {_: "1", s: "none"}}}>{id}</Text>
-            <button onClick={() => setItems(items.filter(ts => ts !== id))}>
+            <Text>{id}</Text>
+            <Button onClick={() => setItems(items.filter(ts => ts !== id))}>
               x
-            </button>
+            </Button>
           </View>
         )
       })}
-      <button onClick={() => setItems([...items, Date.now()])}>Add view</button>
-      <Text
-        css={{
-          gap: 3,
-          bg: "blue",
-          p: 10,
-          "&:hover": {bg: {_: "red", s: "blue", m: "green"}},
-        }}
+      <Button
+        disabled={items.length >= 5}
+        onClick={() => setItems([...items, Date.now()])}
       >
-        Text
-      </Text>
+        Add view
+      </Button>
     </View>
   )
 }
