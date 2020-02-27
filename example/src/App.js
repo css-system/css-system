@@ -1,85 +1,6 @@
 import {useCss} from "@css-system/use-css"
 import React, {createContext, useContext, useState} from "react"
-
-const theme = {
-  breakpoints: {s: "40em", m: "52em", l: "64em"},
-  colors: {
-    primary: "red",
-    secondary: "green",
-    accent: "blue",
-    button: {
-      bg: "white",
-      color: "black",
-    },
-  },
-  space: [0, 4, 8, 16, 32],
-}
-
-const ThemeContext = createContext(theme)
-
-const createGapRules = (flexDirection, gap, theme) => {
-  if (typeof flexDirection === "string") {
-    const isDirectionVertical =
-      flexDirection === "column" || flexDirection === "column-reverse"
-
-    return {
-      "& > * + *": {
-        [isDirectionVertical ? "mt" : "ml"]: gap,
-      },
-    }
-  }
-
-  let lastFlexDirection
-  let lastGap
-
-  const gaps = typeof gap === "object" ? gap : {_: gap}
-  const flexDirections = flexDirection
-  const mergedBreakpointsSet = new Set([
-    ...Object.keys(flexDirections),
-    ...Object.keys(gaps),
-  ])
-
-  const marginTops = {}
-  const marginLefts = {}
-  const themeBreakpoints = ["_", ...Object.keys(theme.breakpoints)]
-
-  for (const themeBreakpoint of themeBreakpoints) {
-    if (mergedBreakpointsSet.has(themeBreakpoint) === false) {
-      continue
-    }
-
-    const mergedBreakpoint = themeBreakpoint
-
-    const directionForCurrentBreakPoint =
-      flexDirections[mergedBreakpoint] != null
-        ? flexDirections[mergedBreakpoint]
-        : lastFlexDirection
-    lastFlexDirection = directionForCurrentBreakPoint
-
-    const gapForCurrentBreakpoint =
-      gaps[mergedBreakpoint] != null ? gaps[mergedBreakpoint] : lastGap
-    lastGap = gapForCurrentBreakpoint
-
-    const isDirectionVertical =
-      directionForCurrentBreakPoint === "column" ||
-      directionForCurrentBreakPoint === "column-reverse"
-
-    if (isDirectionVertical) {
-      marginTops[mergedBreakpoint] = gapForCurrentBreakpoint
-      marginLefts[mergedBreakpoint] = 0
-    } else {
-      marginLefts[mergedBreakpoint] = gapForCurrentBreakpoint
-      marginTops[mergedBreakpoint] = 0
-    }
-  }
-
-  return {
-    "& > * + *": {
-      mt: marginTops,
-      ml: marginLefts,
-    },
-  }
-}
+import {ThemeContext} from "./theme"
 
 const View = ({as: Component = "div", css, ...props}) => {
   const {gap, ...otherCssProps} = {
@@ -127,7 +48,7 @@ const Text = ({as: Component = "span", css, ...props}) => {
   return <Component className={className} {...props} />
 }
 
-const Button = ({as: Component = "button", css, ...props}) => {
+const Button = ({as: Component = "button", css = {}, ...props}) => {
   const theme = useContext(ThemeContext)
   const className = useCss(
     {
@@ -141,16 +62,18 @@ const Button = ({as: Component = "button", css, ...props}) => {
       minHeight: 0,
       flex: "none",
       cursor: "pointer",
+      ...css,
       "&:active": {
+        ...css["&:active"],
         borderColor: "button.bg",
         bg: "button.color",
         color: "button.bg",
       },
       "&:disabled": {
+        ...css["&:disabled"],
         cursor: "not-allowed",
         opacity: 0.5,
       },
-      ...css,
     },
     theme
   )
@@ -165,7 +88,7 @@ export default function App() {
     <View
       css={{
         flexDirection: {_: "column", m: "row"},
-        gap: {_: 0, s: 1, m: 2, l: 3},
+        gap: {_: 1, s: 2, m: 3, l: 4},
       }}
     >
       {items.map(id => {

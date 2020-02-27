@@ -23,8 +23,7 @@
     "deploy": "gh-pages -d example/build"
   },
   "dependencies": {
-    "hash-sum": "^2.0.0",
-    "@styled-system/css": "^5.1.4"
+    "hash-sum": "^2.0.0"
   },
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0",
@@ -36,8 +35,8 @@
     "@types/hash-sum": "^1.0.0",
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.0.5",
-    "@types/styled-system__css": "^5.0.4",
     "cross-env": "^7.0.0",
+    "csstype": "^2.6.9",
     "gh-pages": "^2.2.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
