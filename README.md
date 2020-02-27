@@ -1,6 +1,7 @@
 # css-system/use-css
 
 A react hook for building versatile design primitives.
+It follow the (theme ui specifications)[https://github.com/system-ui/theme-specification].
 
 ## Example
 
@@ -10,7 +11,7 @@ import ReactDOM from "react-dom"
 import {useCss} from "@css-system/use-css"
 
 const theme = {
-  breakpoints: ["40em", "52em", "64em"],
+  breakpoints: {s: "40em", m: "52em", l: "64em"},
   colors: {
     background: "#ffffff",
     text: "#000000",
@@ -30,7 +31,6 @@ const View = ({as: Component = "div", css, ...props}) => {
       minWidth: 0,
       minHeight: 0,
       flex: "none",
-      alignSelf: "auto",
       alignItems: "stretch",
       flexDirection: "column",
       justifyContent: "flex-start",
@@ -46,14 +46,10 @@ const Text = ({as: Component = "span", css, ...props}) => {
   const theme = useContext(ThemeContext)
   const className = useCss(
     {
-      display: "inline-flex",
+      display: "inline",
       minWidth: 0,
       minHeight: 0,
       flex: "none",
-      alignSelf: "auto",
-      alignItems: "stretch",
-      flexDirection: "row",
-      justifyContent: "flex-start",
       ...css,
     },
     theme
@@ -66,14 +62,14 @@ const App = () => {
   return (
     <View
       css={{
-        p: [1, 2, 3],
+        p: {_: 0, s: 1, m: 2, l: 3},
         "&:hover": {
           bg: "text",
           color: "background",
         },
       }}
     >
-      <Text css={{fontSize: [1, 2, 3]}}>Hello world !</Text>
+      <Text css={{fontSize: {_: 1, m: 2}}>Hello world !</Text>
     </View>
   )
 }

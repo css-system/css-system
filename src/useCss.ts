@@ -1,8 +1,9 @@
-import css, {CSSObject, SystemStyleObject, Theme} from "@styled-system/css"
 import sum from "hash-sum"
 import {useContext, useMemo} from "react"
 import {StyleSheetContext} from "./stylesheet"
 import unitlessCssProperties from "./unitlessCssProperties"
+import {computeCssObject} from "./computeCssObject"
+import {CSSObject, SystemStyleObject, Theme} from "./types"
 
 const addUnitIfNeeded = (name: string, value: unknown): string => {
   if (value == null || typeof value === "boolean" || value === "") {
@@ -49,40 +50,42 @@ const populateRulesObject = (
   })
 }
 
-const stylesObjectToRulesObjects = (cssObject: CSSObject): any => {
-  const rulesObjects = {}
-  populateRulesObject("&", cssObject, rulesObjects)
-  return rulesObjects
+const computeRulesObject = (cssObject: CSSObject): any => {
+  const rulesObject = {}
+  populateRulesObject("&", cssObject, rulesObject)
+  return rulesObject
 }
+
+const defaultDeps = []
 
 export const useCss = (
   systemObject: SystemStyleObject,
   theme: Theme,
-  deps?: any[]
+  deps: any[] = defaultDeps
 ): string => {
   const styleSheet = useContext(StyleSheetContext)
 
   const className = useMemo(() => {
-    const styleObject = css(systemObject)(theme)
-    const hash = sum(styleObject)
+    const cssObject = computeCssObject(systemObject, theme)
+    const hash = sum(cssObject)
     const className = `style-${hash}`
 
     if (!styleSheet.createdClassNames[className]) {
-      const styleRulesObject = stylesObjectToRulesObjects(styleObject)
+      const rulesObject = computeRulesObject(cssObject)
 
-      const rulesKeys = Object.keys(styleRulesObject).sort((a, b) =>
+      const rulesKeys = Object.keys(rulesObject).sort((a, b) =>
         a < b ? -1 : a > b ? 1 : 0
       )
 
       for (const ruleKey of rulesKeys) {
-        if (typeof styleRulesObject[ruleKey] === "string") {
+        if (typeof rulesObject[ruleKey] === "string") {
           const selector = ruleKey.replace(/&/g, "." + className)
-          const declaration = styleRulesObject[ruleKey]
+          const declaration = rulesObject[ruleKey]
 
           styleSheet.insertRule(`${selector}{${declaration}}`)
         } else {
           const identifier = ruleKey
-          const ruleObject = styleRulesObject[identifier]
+          const ruleObject = rulesObject[identifier]
 
           let ruleContent = ""
           for (const ruleObjectKey in ruleObject) {
@@ -101,7 +104,7 @@ export const useCss = (
     return className
     // Assume that systemObject is stable
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [theme, ...(deps ? deps : [])])
+  }, [theme, ...deps])
 
   return className
 }
