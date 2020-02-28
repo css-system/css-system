@@ -1,7 +1,13 @@
 # css-system/use-css
 
+[![npm package][npm-badge]][npm]
+
+[npm-badge]: https://img.shields.io/npm/v/@css-system/use-css.svg?style=flat-square
+[npm]: https://www.npmjs.org/package/@css-system/use-css
+
 A react hook for building versatile design primitives.
-It follow the (theme ui specifications)[https://github.com/system-ui/theme-specification].
+
+It follow the [theme ui specifications](https://github.com/system-ui/theme-specification).
 
 ## Example
 
@@ -66,3 +72,4 @@ const App = () => {
   )
 }
 ```
+
