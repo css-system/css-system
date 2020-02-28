@@ -1,6 +1,7 @@
-import {useCss, ThemeContext} from "@css-system/use-css"
-import React, {useContext, useState, useMemo} from "react"
+import {ThemeContext, useCss} from "@css-system/use-css"
+import React, {useContext, useMemo, useState} from "react"
 import {createGapRules} from "./createGapRules"
+import {ThemeProvider} from "./ThemeProvider"
 
 const View = ({as: Component = "div", css, ...props}) => {
   const {gap, ...otherCssProps} = {
@@ -82,41 +83,43 @@ export default function App() {
   const [items, setItems] = useState([])
 
   return (
-    <View
-      css={{
-        flexDirection: {_: "column", m: "row"},
-        gap: {_: 1, s: 2, m: 3, l: 4},
-      }}
-    >
-      {items.map(id => {
-        return (
-          <View
-            key={id}
-            css={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 3,
-              p: 10,
-              bg: "grey",
-              "&:hover": {
-                bg: {_: "#55F04A", s: "secondary", m: "accent", l: "#00A265"},
-              },
-            }}
-          >
-            <Text>{id}</Text>
-            <Button onClick={() => setItems(items.filter(ts => ts !== id))}>
-              x
-            </Button>
-          </View>
-        )
-      })}
-      <Button
-        disabled={items.length >= 5}
-        onClick={() => setItems([...items, Date.now()])}
+    <ThemeProvider>
+      <View
+        css={{
+          flexDirection: {_: "column", m: "row"},
+          gap: {_: 1, s: 2, m: 3, l: 4},
+        }}
       >
-        Add view
-      </Button>
-    </View>
+        {items.map(id => {
+          return (
+            <View
+              key={id}
+              css={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 3,
+                p: 10,
+                bg: "grey",
+                "&:hover": {
+                  bg: {_: "#55F04A", s: "secondary", m: "accent", l: "#00A265"},
+                },
+              }}
+            >
+              <Text>{id}</Text>
+              <Button onClick={() => setItems(items.filter(ts => ts !== id))}>
+                x
+              </Button>
+            </View>
+          )
+        })}
+        <Button
+          disabled={items.length >= 5}
+          onClick={() => setItems([...items, Date.now()])}
+        >
+          Add view
+        </Button>
+      </View>
+    </ThemeProvider>
   )
 }
