@@ -1,9 +1,10 @@
 import sum from "hash-sum"
 import {useContext, useMemo} from "react"
-import {StyleSheetContext} from "./stylesheet"
-import unitlessCssProperties from "./unitlessCssProperties"
 import {computeCssObject} from "./computeCssObject"
-import {CSSObject, SystemStyleObject, Theme} from "./types"
+import {StyleSheetContext} from "./stylesheet"
+import {ThemeContext} from "./themeContext"
+import {CSSObject, SystemStyleObject} from "./types"
+import unitlessCssProperties from "./unitlessCssProperties"
 
 const addUnitIfNeeded = (name: string, value: unknown): string => {
   if (value == null || typeof value === "boolean" || value === "") {
@@ -60,10 +61,10 @@ const defaultDeps = []
 
 export const useCss = (
   systemObject: SystemStyleObject,
-  theme: Theme,
   deps: any[] = defaultDeps
 ): string => {
   const styleSheet = useContext(StyleSheetContext)
+  const theme = useContext(ThemeContext)
 
   const className = useMemo(() => {
     const cssObject = computeCssObject(systemObject, theme)

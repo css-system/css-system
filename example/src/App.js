@@ -1,6 +1,5 @@
-import {useCss} from "@css-system/use-css"
-import React, {createContext, useContext, useState} from "react"
-import {ThemeContext} from "./theme"
+import {useCss, ThemeContext} from "@css-system/use-css"
+import React, {useContext, useState, useMemo} from "react"
 import {createGapRules} from "./createGapRules"
 
 const View = ({as: Component = "div", css, ...props}) => {
@@ -17,67 +16,64 @@ const View = ({as: Component = "div", css, ...props}) => {
 
   const theme = useContext(ThemeContext)
 
+  const gapCssProps = useMemo(() => {
+    if (gap) {
+      return createGapRules(otherCssProps.flexDirection, gap, theme)
+    }
+  }, [gap, otherCssProps.flexDirection, theme])
+
   const className = useCss(
     gap
       ? {
           ...otherCssProps,
-          ...createGapRules(otherCssProps.flexDirection, gap, theme),
+          ...gapCssProps,
         }
-      : otherCssProps,
-    theme
+      : otherCssProps
   )
 
   return <Component className={className} {...props} />
 }
 
 const Text = ({as: Component = "span", css, ...props}) => {
-  const theme = useContext(ThemeContext)
-  const className = useCss(
-    {
-      display: "inline-flex",
-      minWidth: 0,
-      minHeight: 0,
-      flex: "none",
-      alignItems: "stretch",
-      flexDirection: "row",
-      justifyContent: "flex-start",
-      ...css,
-    },
-    theme
-  )
+  const className = useCss({
+    display: "inline-flex",
+    minWidth: 0,
+    minHeight: 0,
+    flex: "none",
+    alignItems: "stretch",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    ...css,
+  })
 
   return <Component className={className} {...props} />
 }
 
 const Button = ({as: Component = "button", css = {}, ...props}) => {
-  const theme = useContext(ThemeContext)
-  const className = useCss(
-    {
-      py: {_: 1, m: 2},
-      px: {_: 2, m: 3},
-      bg: "button.bg",
-      border: "2px solid",
-      borderColor: "button.color",
-      color: "button.color",
-      minWidth: 0,
-      minHeight: 0,
-      flex: "none",
-      cursor: "pointer",
-      ...css,
-      "&:active": {
-        ...css["&:active"],
-        borderColor: "button.bg",
-        bg: "button.color",
-        color: "button.bg",
-      },
-      "&:disabled": {
-        ...css["&:disabled"],
-        cursor: "not-allowed",
-        opacity: 0.5,
-      },
+  const className = useCss({
+    py: {_: 1, m: 2},
+    px: {_: 2, m: 3},
+    bg: "button.bg",
+    border: "2px solid",
+    borderColor: "button.color",
+    color: "button.color",
+    minWidth: 0,
+    minHeight: 0,
+    flex: "none",
+    cursor: "pointer",
+    ...css,
+    "&:active": {
+      ...css["&:active"],
+      borderColor: "button.bg",
+      bg: "button.color",
+      color: "button.bg",
     },
-    theme
-  )
+    "&:disabled": {
+      ...css["&:disabled"],
+      cursor: "not-allowed",
+      opacity: 0.5,
+    },
+  })
 
   return <Component className={className} {...props} />
 }

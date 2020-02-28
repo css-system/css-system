@@ -8,7 +8,7 @@ It follow the (theme ui specifications)[https://github.com/system-ui/theme-speci
 ```jsx
 import React, {createContext, useContext} from "react"
 import ReactDOM from "react-dom"
-import {useCss} from "@css-system/use-css"
+import {useCss, ThemeContext} from "@css-system/use-css"
 
 const theme = {
   breakpoints: {s: "40em", m: "52em", l: "64em"},
@@ -21,56 +21,48 @@ const theme = {
   fontSizes: [0, 12, 14, 16, 20, 24, 32, 48, 64, 72],
 }
 
-const ThemeContext = createContext(theme)
-
 const View = ({as: Component = "div", css, ...props}) => {
-  const theme = useContext(ThemeContext)
-  const className = useCss(
-    {
-      display: "flex",
-      minWidth: 0,
-      minHeight: 0,
-      flex: "none",
-      alignItems: "stretch",
-      flexDirection: "column",
-      justifyContent: "flex-start",
-      ...css,
-    },
-    theme
-  )
+  const className = useCss({
+    display: "flex",
+    minWidth: 0,
+    minHeight: 0,
+    flex: "none",
+    alignItems: "stretch",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    ...css,
+  })
 
   return <Component className={className} {...props} />
 }
 
 const Text = ({as: Component = "span", css, ...props}) => {
-  const theme = useContext(ThemeContext)
-  const className = useCss(
-    {
-      display: "inline",
-      minWidth: 0,
-      minHeight: 0,
-      flex: "none",
-      ...css,
-    },
-    theme
-  )
+  const className = useCss({
+    display: "inline",
+    minWidth: 0,
+    minHeight: 0,
+    flex: "none",
+    ...css,
+  })
 
   return <Component className={className} {...props} />
 }
 
 const App = () => {
   return (
-    <View
-      css={{
-        p: {_: 0, s: 1, m: 2, l: 3},
-        "&:hover": {
-          bg: "text",
-          color: "background",
-        },
-      }}
-    >
-      <Text css={{fontSize: {_: 1, m: 2}}>Hello world !</Text>
-    </View>
+    <ThemeContext.Provider value={theme}>
+      <View
+        css={{
+          p: {_: 0, s: 1, m: 2, l: 3},
+          "&:hover": {
+            bg: "text",
+            color: "background",
+          },
+        }}
+      >
+        <Text css={{fontSize: {_: 1, m: 2}}}>Hello world !</Text>
+      </View>
+    </ThemeContext.Provider>
   )
 }
 ```

@@ -1,4 +1,4 @@
-import React, {Context} from "react"
+import {createContext} from "react"
 
 class ClientStyleSheet {
   sheet: CSSStyleSheet
@@ -28,9 +28,7 @@ class ServerStyleSheet {
 
 const isBrowser = typeof document !== "undefined"
 
-const StyleSheetContext: Context<
-  ServerStyleSheet | ClientStyleSheet
-> = React.createContext(
+const StyleSheetContext = createContext(
   isBrowser ? new ClientStyleSheet() : new ServerStyleSheet()
 )
 

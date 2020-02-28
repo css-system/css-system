@@ -1,4 +1,3 @@
-import {defaultTheme} from "./defaultTheme"
 import {SystemStyleObject, Theme, CSSObject} from "./types"
 
 const get = (obj: Object, path: string | number, def?: any) => {
@@ -145,7 +144,7 @@ const transforms = [
 
 const responsive = (systemObject: SystemStyleObject, theme: Theme) => {
   const next = {}
-  const breakpoints = get(theme, "breakpoints", defaultTheme.breakpoints)
+  const breakpoints = get(theme, "breakpoints")
 
   const mediaQueries = Object.keys(breakpoints).reduce(
     (acc, breakpointKey) => {
@@ -189,12 +188,8 @@ const responsive = (systemObject: SystemStyleObject, theme: Theme) => {
 
 export const computeCssObject = (
   systemObject: SystemStyleObject,
-  mayBeTheme: Theme
+  theme: Theme
 ): CSSObject => {
-  const theme = {
-    ...defaultTheme,
-    ...mayBeTheme,
-  }
   let result = {}
   const styles = responsive(systemObject, theme)
   for (const key in styles) {
