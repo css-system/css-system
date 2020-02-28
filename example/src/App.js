@@ -1,6 +1,7 @@
 import {useCss} from "@css-system/use-css"
 import React, {createContext, useContext, useState} from "react"
 import {ThemeContext} from "./theme"
+import {createGapRules} from "./createGapRules"
 
 const View = ({as: Component = "div", css, ...props}) => {
   const {gap, ...otherCssProps} = {
