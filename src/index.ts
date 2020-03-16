@@ -1,9 +1,10 @@
 export {useCss} from "./useCss"
+export {useGlobalCss} from "./useGlobalCss"
 
 export {ThemeContext} from "./themeContext"
 
 export {
-  ServerStyleSheet,
-  ClientStyleSheet,
-  StyleSheetContext,
+  ServerStyleSheetManager,
+  ClientStyleSheetManager,
+  StyleSheetManagerContext,
 } from "./stylesheet"

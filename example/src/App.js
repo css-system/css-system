@@ -1,4 +1,4 @@
-import {ThemeContext, useCss} from "@css-system/use-css"
+import {ThemeContext, useCss, useGlobalCss} from "@css-system/use-css"
 import React, {useContext, useMemo, useState} from "react"
 import {createGapRules} from "./createGapRules"
 import {ThemeProvider} from "./ThemeProvider"
@@ -81,6 +81,15 @@ const Button = ({as: Component = "button", css = {}, ...props}) => {
 
 export default function App() {
   const [items, setItems] = useState([])
+
+  useGlobalCss({
+    body: {
+      bg: {_: "red", m: "blue"},
+    },
+    "*, *:before, *:after": {
+      boxSizing: "border-box",
+    },
+  })
 
   return (
     <ThemeProvider>
