@@ -84,7 +84,7 @@ export default function App() {
 
   useGlobalCss({
     body: {
-      bg: {_: "red", m: "blue"},
+      p: {_: 2, m: 4},
     },
     "*, *:before, *:after": {
       boxSizing: "border-box",
