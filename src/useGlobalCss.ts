@@ -1,5 +1,5 @@
 import sum from "hash-sum"
-import {useContext, useEffect} from "react"
+import {useContext, useEffect, useMemo} from "react"
 import {computeCssObject} from "./computeCssObject"
 import {StyleSheetManagerContext} from "./stylesheet"
 import {ThemeContext} from "./themeContext"
@@ -15,7 +15,7 @@ export const useGlobalCss = (
   const styleSheetManager = useContext(StyleSheetManagerContext)
   const theme = useContext(ThemeContext)
 
-  useEffect(() => {
+  const id = useMemo(() => {
     const id = sum(systemObject)
     const styleSheet = styleSheetManager.createStyleSheet(id)
 
@@ -52,9 +52,10 @@ export const useGlobalCss = (
 
     styleSheet.createdClassNames[id] = true
 
-    return () => styleSheetManager.removeStyleSheet(id)
-
+    return id
     // Assume that systemObject is stable
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme, ...deps])
+
+  return useEffect(() => () => styleSheetManager.removeStyleSheet(id))
 }
