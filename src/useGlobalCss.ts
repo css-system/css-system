@@ -1,5 +1,5 @@
 import sum from "hash-sum"
-import {useContext, useMemo} from "react"
+import {useContext, useEffect, useMemo} from "react"
 import {computeCssObject} from "./computeCssObject"
 import {StyleSheetManagerContext} from "./stylesheet"
 import {ThemeContext} from "./themeContext"
@@ -8,20 +8,20 @@ import {computeRulesObject} from "./computeRulesObject"
 
 const defaultDeps = []
 
-export const useCss = (
+export const useGlobalCss = (
   systemObject: SystemStyleObject,
   deps: any[] = defaultDeps
-): string => {
+): void => {
   const styleSheetManager = useContext(StyleSheetManagerContext)
   const theme = useContext(ThemeContext)
-  const className = useMemo(() => {
-    const cssObject = computeCssObject(systemObject, theme)
-    const hash = sum(cssObject)
-    const className = `style-${hash}`
 
-    const styleSheet = styleSheetManager.getGlobalStyleSheet()
+  const id = useMemo(() => {
+    const id = sum(systemObject)
+    const styleSheet = styleSheetManager.createStyleSheet(id)
 
-    if (!styleSheet.createdClassNames[className]) {
+    for (const globalSelector in systemObject) {
+      const cssObject = computeCssObject(systemObject[globalSelector], theme)
+
       const rulesObject = computeRulesObject(cssObject)
 
       const rulesKeys = Object.keys(rulesObject).sort((a, b) =>
@@ -30,7 +30,7 @@ export const useCss = (
 
       for (const ruleKey of rulesKeys) {
         if (typeof rulesObject[ruleKey] === "string") {
-          const selector = ruleKey.replace(/&/g, "." + className)
+          const selector = ruleKey.replace(/&/g, globalSelector)
           const declaration = rulesObject[ruleKey]
 
           styleSheet.insertRule(`${selector}{${declaration}}`)
@@ -40,7 +40,7 @@ export const useCss = (
 
           let ruleContent = ""
           for (const ruleObjectKey in ruleObject) {
-            const selector = ruleObjectKey.replace(/&/g, "." + className)
+            const selector = ruleObjectKey.replace(/&/g, globalSelector)
             let declaration = ruleObject[ruleObjectKey]
             ruleContent += `${selector}{${declaration}}`
           }
@@ -48,14 +48,14 @@ export const useCss = (
           styleSheet.insertRule(`${identifier}{${ruleContent}}`)
         }
       }
-
-      styleSheet.createdClassNames[className] = true
     }
 
-    return className
+    styleSheet.createdClassNames[id] = true
+
+    return id
     // Assume that systemObject is stable
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme, ...deps])
 
-  return className
+  return useEffect(() => () => styleSheetManager.removeStyleSheet(id), [id])
 }

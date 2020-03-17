@@ -14,7 +14,7 @@ It follow the [theme ui specifications](https://github.com/system-ui/theme-speci
 ```jsx
 import React, {createContext, useContext} from "react"
 import ReactDOM from "react-dom"
-import {useCss, ThemeContext} from "@css-system/use-css"
+import {useCss, useGlobalCss, ThemeContext} from "@css-system/use-css"
 
 const theme = {
   breakpoints: {s: "40em", m: "52em", l: "64em"},
@@ -23,7 +23,7 @@ const theme = {
     text: "#000000",
     primary: "#ff0000",
   },
-  space: [0, 4, 8, 16, 32],
+  space: [0, 4, 8, 16, 32, 64, 128],
   fontSizes: [0, 12, 14, 16, 20, 24, 32, 48, 64, 72],
 }
 
@@ -55,6 +55,15 @@ const Text = ({as: Component = "span", css, ...props}) => {
 }
 
 const App = () => {
+  useGlobalCss({
+    body: {
+      p: {_: 5, m: 6},
+    },
+    "*, *:before, *:after": {
+      boxSizing: "border-box",
+    },
+  })
+
   return (
     <ThemeContext.Provider value={theme}>
       <View
@@ -72,4 +81,3 @@ const App = () => {
   )
 }
 ```
-
