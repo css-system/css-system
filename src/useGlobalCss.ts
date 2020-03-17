@@ -57,5 +57,5 @@ export const useGlobalCss = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme, ...deps])
 
-  return useEffect(() => () => styleSheetManager.removeStyleSheet(id))
+  return useEffect(() => () => styleSheetManager.removeStyleSheet(id), [id])
 }
