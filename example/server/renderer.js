@@ -19,8 +19,8 @@ export const renderer = (req, res, next) => {
 
   const html = fs
     .readFileSync(path.join(__dirname, "..", "build", "index.html"), "utf8")
-    .replace("__STYLE__", stylesheetManager.getStyleTags())
-    .replace("__ROOT__", app)
+    .replace('<style id="__ROOT__"></style>', stylesheetManager.getStyleTags())
+    .replace('<div id="__ROOT__"></div>', app)
 
   return res.send(html)
 }

@@ -1,134 +1,178 @@
-import {ThemeContext, useCss, useGlobalCss} from "@css-system/use-css"
-import React, {useContext, useMemo, useState} from "react"
-import {createGapRules} from "./createGapRules"
+import {useGlobalCss, useKeyframes} from "@css-system/use-css"
+import React, {useState} from "react"
 import {ThemeProvider} from "./ThemeProvider"
+import {View} from "./View"
+import {Button} from "./Button"
+import {Text} from "./Text"
+import {Input} from "./Input"
 
-const View = ({as: Component = "div", css, ...props}) => {
-  const {gap, ...otherCssProps} = {
-    display: "flex",
-    minWidth: 0,
-    minHeight: 0,
-    flex: "none",
-    alignItems: "stretch",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    ...css,
-  }
+const initialTodos = [
+  {
+    id: 4,
+    text: "Create a typed helper for easy primitive creation",
+    completed: false,
+  },
+  {
+    id: 3,
+    text: "Allow themed keyframes creation",
+    completed: true,
+  },
+  {
+    id: 2,
+    text: "Allow themed global styles creation",
+    completed: true,
+  },
+  {
+    id: 1,
+    text: "Create yet another css-in-js library",
+    completed: true,
+  },
+]
 
-  const theme = useContext(ThemeContext)
+const App = () => {
+  const [todos, setTodos] = useState(initialTodos)
 
-  const gapCssProps = useMemo(() => {
-    if (gap) {
-      return createGapRules(otherCssProps.flexDirection, gap, theme)
-    }
-  }, [gap, otherCssProps.flexDirection, theme])
-
-  const className = useCss(
-    gap
-      ? {
-          ...otherCssProps,
-          ...gapCssProps,
-        }
-      : otherCssProps
-  )
-
-  return <Component className={className} {...props} />
-}
-
-const Text = ({as: Component = "span", css, ...props}) => {
-  const className = useCss({
-    display: "inline-flex",
-    minWidth: 0,
-    minHeight: 0,
-    flex: "none",
-    alignItems: "stretch",
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    ...css,
+  const fadeIn = useKeyframes({
+    from: {opacity: 0},
+    to: {opacity: 1},
   })
-
-  return <Component className={className} {...props} />
-}
-
-const Button = ({as: Component = "button", css = {}, ...props}) => {
-  const className = useCss({
-    py: {_: 1, m: 2},
-    px: {_: 2, m: 3},
-    bg: "button.bg",
-    border: "2px solid",
-    borderColor: "button.color",
-    color: "button.color",
-    minWidth: 0,
-    minHeight: 0,
-    flex: "none",
-    cursor: "pointer",
-    ...css,
-    "&:active": {
-      ...css["&:active"],
-      borderColor: "button.bg",
-      bg: "button.color",
-      color: "button.bg",
-    },
-    "&:disabled": {
-      ...css["&:disabled"],
-      cursor: "not-allowed",
-      opacity: 0.5,
-    },
-  })
-
-  return <Component className={className} {...props} />
-}
-
-export default function App() {
-  const [items, setItems] = useState([])
 
   useGlobalCss({
     body: {
-      p: {_: 2, m: 4},
+      m: 0,
+      fontSize: {_: 2, m: 3},
+      fontFamily: "Arial",
+      bg: "background",
+      color: "backgroundText",
     },
     "*, *:before, *:after": {
       boxSizing: "border-box",
     },
   })
 
+  const [pendingTodo, setPendingTodo] = useState("")
+
+  const handlePendingTodoChange = event => {
+    setPendingTodo(event.target.value)
+  }
+
+  const handlePendingTodoAdd = () => {
+    setPendingTodo("")
+    setTodos([{id: Date.now(), text: pendingTodo, completed: false}, ...todos])
+  }
+
+  const handleTodoRemove = todoToRemove => {
+    setTodos(todos.filter(todo => todo !== todoToRemove))
+  }
+  const handleTodoCompleteToggle = todoToComplete => {
+    setTodos(
+      todos.map(todo => {
+        if (todo !== todoToComplete) {
+          return todo
+        }
+        return {
+          ...todoToComplete,
+          completed: !todoToComplete.completed,
+        }
+      })
+    )
+  }
+
   return (
-    <ThemeProvider>
+    <View>
       <View
         css={{
-          flexDirection: {_: "column", m: "row"},
-          gap: {_: 1, s: 2, m: 3, l: 4},
+          bg: "primary",
+          color: "primaryText",
+          alignItems: {_: "stretch", s: "center"},
+          p: {_: 2, m: 3},
+          gap: {_: 2, m: 3},
         }}
       >
-        {items.map(id => {
+        <Text css={{fontSize: {_: 5, s: 6, m: 7, l: 8}}}>
+          The CSS-System Todolist
+        </Text>
+        <View
+          css={{
+            flexDirection: {_: "column", s: "row"},
+            justifyContent: "center",
+            gap: {_: 2, m: 3},
+          }}
+        >
+          <Input
+            autoFocus
+            placeholder="Do something great"
+            value={pendingTodo}
+            onChange={handlePendingTodoChange}
+          ></Input>
+          <Button
+            css={{bg: "accent", color: "accentText"}}
+            disabled={pendingTodo.trim().length === 0}
+            onClick={handlePendingTodoAdd}
+          >
+            Add todo
+          </Button>
+        </View>
+      </View>
+
+      <View
+        css={{
+          "& >  * + *": {
+            borderTop: "1px solid",
+            borderTopColor: "divider",
+          },
+        }}
+      >
+        {todos.map(todo => {
           return (
             <View
-              key={id}
+              key={todo.id}
               css={{
+                animation: `250ms ${fadeIn} linear both`,
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
                 gap: 3,
-                p: 10,
-                bg: "grey",
-                "&:hover": {
-                  bg: {_: "#55F04A", s: "secondary", m: "accent", l: "#00A265"},
-                },
+                p: {_: 2, m: 3},
               }}
             >
-              <Text>{id}</Text>
-              <Button onClick={() => setItems(items.filter(ts => ts !== id))}>
-                x
+              <Button
+                onClick={() => handleTodoCompleteToggle(todo)}
+                css={
+                  !todo.completed
+                    ? {
+                        color: "transparent",
+                        "&:hover": {
+                          color: "lightPrimary",
+                        },
+                      }
+                    : undefined
+                }
+                deps={[todo.completed]}
+              >
+                ✓
               </Button>
+              <Text
+                css={{
+                  flex: "1",
+                  color: todo.completed && "secondaryBackgroundText",
+                  textDecoration: todo.completed ? "line-through" : "normal",
+                }}
+                deps={[todo.completed]}
+              >
+                {todo.text}
+              </Text>
+              <Button onClick={() => handleTodoRemove(todo)}>&times;</Button>
             </View>
           )
         })}
-        <Button
-          disabled={items.length >= 5}
-          onClick={() => setItems([...items, Date.now()])}
-        >
-          Add view
-        </Button>
       </View>
-    </ThemeProvider>
+    </View>
   )
 }
+
+export default () => (
+  <ThemeProvider>
+    <App />
+  </ThemeProvider>
+)
