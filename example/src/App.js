@@ -1,4 +1,4 @@
-import {useGlobalCss, useKeyframes} from "@css-system/use-css"
+import {useGlobalCss, useKeyframes} from "css-system"
 import React, {useState} from "react"
 import {ThemeProvider} from "./ThemeProvider"
 import {View} from "./View"

@@ -1,13 +1,12 @@
 {
   "name": "use-css-example",
-  "homepage": "https://css-system.github.io/use-css",
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
   "dependencies": {
     "@babel/preset-env": "^7.8.4",
     "@babel/register": "^7.8.3",
-    "@css-system/use-css": "link:..",
+    "css-system": "link:..",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "react": "link:../node_modules/react",

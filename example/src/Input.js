@@ -1,4 +1,4 @@
-import {useCss} from "@css-system/use-css"
+import {useCss} from "css-system"
 import React from "react"
 
 export const Input = ({as: Component = "input", css = {}, deps, ...props}) => {

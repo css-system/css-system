@@ -1,7 +1,4 @@
-import {
-  ServerStyleSheetManager,
-  StyleSheetManagerContext,
-} from "@css-system/use-css"
+import {ServerStyleSheetManager, StyleSheetManagerContext} from "css-system"
 import fs from "fs"
 import path from "path"
 import React from "react"

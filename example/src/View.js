@@ -1,4 +1,4 @@
-import {ThemeContext, useCss} from "@css-system/use-css"
+import {ThemeContext, useCss} from "css-system"
 import React, {useContext, useMemo} from "react"
 
 const createGapRules = (flexDirection, gap, theme) => {

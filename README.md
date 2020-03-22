@@ -1,32 +1,40 @@
-# css-system/use-css
+# css-system
 
 [![npm package][npm-badge]][npm]
 
-[npm-badge]: https://img.shields.io/npm/v/@css-system/use-css.svg?style=flat-square
-[npm]: https://www.npmjs.org/package/@css-system/use-css
+[npm-badge]: https://img.shields.io/npm/v/use-css.svg?style=flat-square
+[npm]: https://www.npmjs.org/package/use-css
 
-A react hook for building versatile design primitives.
+React hooks for building versatile design primitives.
 
-It follow the [theme ui specifications](https://github.com/system-ui/theme-specification).
+It follow the [theme ui specifications](https://github.com/system-ui/theme-specification) and was heavily influenced by [styled-system](https://github.com/styled-system/styled-system).
 
-## Example
+```sh
+yarn add css-system
+```
+
+## Features
+
+- Easily create your own design primitive
+- Speak in intentions instead of absolute values with theme first class support
+- Create responsive UIs without ever writing a media query
+- Supports Server Side Rendering
+
+## Try It Out
+
+You can run the example todo list app by cloning this project and running the following command at the project root
+
+```sh
+yarn && yarn --cwd example && yarn --cwd example start
+```
+
+## Usage
 
 ```jsx
-import React, {createContext, useContext} from "react"
-import ReactDOM from "react-dom"
-import {useCss, useGlobalCss, ThemeContext} from "@css-system/use-css"
+import React from "react"
+import {useCss} from "css-system"
 
-const theme = {
-  breakpoints: {s: "40em", m: "52em", l: "64em"},
-  colors: {
-    background: "#ffffff",
-    text: "#000000",
-    primary: "#ff0000",
-  },
-  space: [0, 4, 8, 16, 32, 64, 128],
-  fontSizes: [0, 12, 14, 16, 20, 24, 32, 48, 64, 72],
-}
-
+// Create your own design primitive and chose its default style
 const View = ({as: Component = "div", css, ...props}) => {
   const className = useCss({
     display: "flex",
@@ -42,42 +50,98 @@ const View = ({as: Component = "div", css, ...props}) => {
   return <Component className={className} {...props} />
 }
 
-const Text = ({as: Component = "span", css, ...props}) => {
-  const className = useCss({
-    display: "inline",
-    minWidth: 0,
-    minHeight: 0,
-    flex: "none",
-    ...css,
-  })
+// Easily create great ui using it
+export const App = () => (
+  <View css={{color: "primary", fontSize: 4}}>Hello world</View>
+)
+```
 
-  return <Component className={className} {...props} />
-}
+## First class support for theme
+
+css-system make it easy for you follow your design system,
+
+```jsx
+// Just use indexes from your theme scales
+<View css={{padding: 1, fontSize: 2}} />
+
+// Use strings fro absolute value
+<View css={{padding: '10px'}} />
+
+// Colors are from the colors scale
+<View css={{backgroundColor: 'primary'}} />
+
+```
+
+## Property aliases
+
+Reference commonly used properties by their alias
+
+```jsx
+// Here p stands for padding, m for margin & bg for backgroundColor
+<View css={{p: 1, m: "auto", bg: "accent"}} />
+
+// Some aliases map to multiple properties
+<View css={{px: 1, my: 2}} />
+```
+
+## Responsive style props
+
+Set responsive properties with a shorthand object syntax.
+
+```jsx
+// _ means from 0px to the next defined breakpoint, here m
+<View css={{p: {_: 2, , m: 4}}} />
+```
+
+## Relative selectors props
+
+You can create your own selectors by referencing the component with `&`.
+
+```jsx
+<View css={{bg: "white", "&:hover": {bg: "black"}}} />
+
+// It can even be responsive
+<View css={{"& > * + *": {mt: {_: 2, m: 3}}}} />
+```
+
+## Global styles & keyframes
+
+```jsx
+import {useGlobalCss, useKeyFrames} from "css-system"
 
 const App = () => {
+  const fadeIn = useKeyFrames({
+    from: {
+      opacity: 0,
+    },
+    to: {
+      opacity: 1,
+    },
+  })
+
   useGlobalCss({
     body: {
-      p: {_: 5, m: 6},
+      animation: `500ms ${fadeIn} both`,
     },
     "*, *:before, *:after": {
       boxSizing: "border-box",
     },
   })
 
-  return (
-    <ThemeContext.Provider value={theme}>
-      <View
-        css={{
-          p: {_: 0, s: 1, m: 2, l: 3},
-          "&:hover": {
-            bg: "text",
-            color: "background",
-          },
-        }}
-      >
-        <Text css={{fontSize: {_: 1, m: 2}}}>Hello world !</Text>
-      </View>
-    </ThemeContext.Provider>
-  )
+  return <div>Hello world !</div>
 }
 ```
+
+## Gatsby support
+
+See [gatsby-plugin-css-system](https://github.com/css-system/gatsby-plugin-css-system)
+
+## Further Reading
+
+- [TWO STEPS FORWARD, ONE STEP BACK](https://jxnblk.com/blog/two-steps-forward/)
+
+## Built with css-system
+
+- [Amstangram](https://amstangr.am)
+
+[MIT License](LICENSE.md)

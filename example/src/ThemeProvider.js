@@ -1,4 +1,4 @@
-import {ThemeContext} from "@css-system/use-css"
+import {ThemeContext} from "css-system"
 import React, {useState} from "react"
 import {Button} from "./Button"
 import {View} from "./View"

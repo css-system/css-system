@@ -1,17 +1,16 @@
 {
-  "name": "@css-system/use-css",
-  "version": "0.4.1",
+  "name": "css-system",
+  "version": "0.5.1",
+  "bugs": {
+    "url": "https://github.com/css-system/css-system/issues"
+  },
+  "homepage": "https://github.com/css-system/css-system#readme",
   "license": "MIT",
-  "repository": "css-system/use-css",
-  "homepage": "https://css-system.github.io/use-css",
+  "repository": "css-system/css-system",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
   "typings": "dist/index.d.ts",
-  "engines": {
-    "node": ">=8",
-    "npm": ">=5"
-  },
   "files": [
     "dist"
   ],

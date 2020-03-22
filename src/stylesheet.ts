@@ -1,4 +1,4 @@
-import {createContext} from "react"
+import {createContext, createElement} from "react"
 
 const GLOBAL_ID = "global"
 const ID_ATTRIBUTE = "data-css-system-id"
@@ -86,6 +86,16 @@ class ServerStyleSheet implements StyleSheet {
       this.createdClassNames
     ).join(CREATED_CLASS_NAMES_SEPARATOR)}">${this.rules.join("\n")}</style>`
   }
+
+  getStyleComponent() {
+    return createElement("style", {
+      [ID_ATTRIBUTE]: this.id,
+      [CREATED_CLASS_NAMES_ATTRIBUTES]: Object.keys(
+        this.createdClassNames
+      ).join(CREATED_CLASS_NAMES_SEPARATOR),
+      dangerouslySetInnerHTML: {__html: this.rules.join("\n")},
+    })
+  }
 }
 
 class ServerStyleSheetManager implements StyleSheetManager {
@@ -110,6 +120,12 @@ class ServerStyleSheetManager implements StyleSheetManager {
     return Object.values(this.styleSheets)
       .map(styleSheet => styleSheet.getStyleTag())
       .join("\n")
+  }
+
+  getStyleComponents() {
+    return Object.values(this.styleSheets).map(styleSheet =>
+      styleSheet.getStyleComponent()
+    )
   }
 }
 
