@@ -1,24 +1,5 @@
-import unitlessCssProperties from "./unitlessCssProperties"
 import {CSSObject} from "./types"
-
-const addUnitIfNeeded = (name: string, value: unknown): string => {
-  if (value == null || typeof value === "boolean" || value === "") {
-    return ""
-  }
-
-  if (
-    typeof value === "number" &&
-    value !== 0 &&
-    !(name in unitlessCssProperties)
-  ) {
-    return `${value}px` // Presumes implicit 'px' suffix for unitless numbers
-  }
-
-  return String(value).trim()
-}
-
-const camelCaseToSnakeCase = (prop: string): string =>
-  prop.replace(/[A-Z]/g, match => `-${match.toLowerCase()}`)
+import {camelCaseToSnakeCase, addUnitIfNeeded} from "./utils"
 
 const populateRulesObject = (
   className: string,

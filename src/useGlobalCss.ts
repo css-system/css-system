@@ -5,12 +5,11 @@ import {StyleSheetManagerContext} from "./stylesheet"
 import {ThemeContext} from "./themeContext"
 import {SystemStyleObject} from "./types"
 import {computeRulesObject} from "./computeRulesObject"
-
-const defaultDeps = []
+import {EMPTY_ARRAY} from "./constants"
 
 export const useGlobalCss = (
   systemObject: SystemStyleObject,
-  deps: any[] = defaultDeps
+  deps: any[] = EMPTY_ARRAY
 ): void => {
   const styleSheetManager = useContext(StyleSheetManagerContext)
   const theme = useContext(ThemeContext)
@@ -50,12 +49,10 @@ export const useGlobalCss = (
       }
     }
 
-    styleSheet.createdClassNames[id] = true
-
     return id
     // Assume that systemObject is stable
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme, ...deps])
 
-  return useEffect(() => () => styleSheetManager.removeStyleSheet(id), [id])
+  useEffect(() => () => styleSheetManager.removeStyleSheet(id), [id, theme])
 }

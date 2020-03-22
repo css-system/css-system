@@ -1,8 +1,8 @@
 import {createContext} from "react"
 
 const GLOBAL_ID = "global"
-const ID_ATTRIBUTE = "data-css-id"
-const CREATED_CLASS_NAMES_ATTRIBUTES = "data-css-class-names"
+const ID_ATTRIBUTE = "data-css-system-id"
+const CREATED_CLASS_NAMES_ATTRIBUTES = "data-css-system-class-names"
 const CREATED_CLASS_NAMES_SEPARATOR = " "
 
 interface StyleSheet {

@@ -5,15 +5,15 @@ import {StyleSheetManagerContext} from "./stylesheet"
 import {ThemeContext} from "./themeContext"
 import {SystemStyleObject} from "./types"
 import {computeRulesObject} from "./computeRulesObject"
-
-const defaultDeps = []
+import {EMPTY_ARRAY} from "./constants"
 
 export const useCss = (
   systemObject: SystemStyleObject,
-  deps: any[] = defaultDeps
+  deps: any[] = EMPTY_ARRAY
 ): string => {
   const styleSheetManager = useContext(StyleSheetManagerContext)
   const theme = useContext(ThemeContext)
+
   const className = useMemo(() => {
     const cssObject = computeCssObject(systemObject, theme)
     const hash = sum(cssObject)

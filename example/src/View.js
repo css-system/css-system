@@ -1,4 +1,7 @@
-export const createGapRules = (flexDirection, gap, theme) => {
+import {ThemeContext, useCss} from "@css-system/use-css"
+import React, {useContext, useMemo} from "react"
+
+const createGapRules = (flexDirection, gap, theme) => {
   if (typeof flexDirection === "string") {
     const isDirectionVertical =
       flexDirection === "column" || flexDirection === "column-reverse"
@@ -60,4 +63,37 @@ export const createGapRules = (flexDirection, gap, theme) => {
       ml: marginLefts,
     },
   }
+}
+
+export const View = ({as: Component = "div", css, deps, ...props}) => {
+  const {gap, ...otherCssProps} = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "stretch",
+    justifyContent: "flex-start",
+    minWidth: 0,
+    minHeight: 0,
+    flex: "none",
+    ...css,
+  }
+
+  const theme = useContext(ThemeContext)
+
+  const gapCssProps = useMemo(() => {
+    if (gap) {
+      return createGapRules(otherCssProps.flexDirection, gap, theme)
+    }
+  }, [gap, otherCssProps.flexDirection, theme])
+
+  const className = useCss(
+    gap
+      ? {
+          ...otherCssProps,
+          ...gapCssProps,
+        }
+      : otherCssProps,
+    deps
+  )
+
+  return <Component className={className} {...props} />
 }
