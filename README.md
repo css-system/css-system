@@ -2,8 +2,8 @@
 
 [![npm package][npm-badge]][npm]
 
-[npm-badge]: https://img.shields.io/npm/v/use-css.svg?style=flat-square
-[npm]: https://www.npmjs.org/package/use-css
+[npm-badge]: https://img.shields.io/npm/v/css-system.svg?style=flat-square
+[npm]: https://www.npmjs.org/package/css-system
 
 React hooks for building versatile design primitives.
 
