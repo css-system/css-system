@@ -24,9 +24,15 @@ export const useCss = (
     if (!styleSheet.createdClassNames[className]) {
       const rulesObject = computeRulesObject(cssObject)
 
-      const rulesKeys = Object.keys(rulesObject).sort((a, b) =>
-        a < b ? -1 : a > b ? 1 : 0
-      )
+      const rulesKeys = Object.keys(rulesObject).sort((ruleKeyA, ruleKeyB) => {
+        if (ruleKeyA[0] === "@" && ruleKeyB[0] === "@") {
+          return 0
+        }
+        if (ruleKeyA[0] === "@" && ruleKeyB[0] !== "@") {
+          return 1
+        }
+        return -1
+      })
 
       for (const ruleKey of rulesKeys) {
         if (typeof rulesObject[ruleKey] === "string") {
