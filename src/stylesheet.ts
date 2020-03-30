@@ -5,6 +5,8 @@ const ID_ATTRIBUTE = "data-css-system-id"
 const CREATED_CLASS_NAMES_ATTRIBUTES = "data-css-system-class-names"
 const CREATED_CLASS_NAMES_SEPARATOR = " "
 
+const isDev = process && process.env && process.env.NODE_ENV === "development"
+
 interface StyleSheet {
   insertRule(rule: string): void
 }
@@ -47,6 +49,19 @@ class ClientStyleSheet implements StyleSheet {
   }
 }
 
+class DevClientStyleSheet extends ClientStyleSheet {
+  styleNode: HTMLStyleElement
+
+  constructor(id: string) {
+    super(id)
+    this.styleNode = this.sheet.ownerNode as HTMLStyleElement
+  }
+
+  insertRule(rule: string) {
+    this.styleNode.textContent += rule
+  }
+}
+
 class ClientStyleSheetManager implements StyleSheetManager {
   styleSheets: Record<string, ClientStyleSheet> = {
     [GLOBAL_ID]: new ClientStyleSheet(GLOBAL_ID),
@@ -63,6 +78,16 @@ class ClientStyleSheetManager implements StyleSheetManager {
 
   removeStyleSheet(id: string) {
     delete this.styleSheets[id]
+  }
+}
+class DevClientStyleSheetManager extends ClientStyleSheetManager {
+  styleSheets: Record<string, DevClientStyleSheet> = {
+    [GLOBAL_ID]: new DevClientStyleSheet(GLOBAL_ID),
+  }
+
+  createStyleSheet(id: string) {
+    this.styleSheets[id] = new DevClientStyleSheet(id)
+    return this.styleSheets[id]
   }
 }
 
@@ -132,7 +157,11 @@ class ServerStyleSheetManager implements StyleSheetManager {
 const isBrowser = typeof document !== "undefined"
 
 const StyleSheetManagerContext = createContext(
-  isBrowser ? new ClientStyleSheetManager() : new ServerStyleSheetManager()
+  isBrowser
+    ? isDev
+      ? new DevClientStyleSheetManager()
+      : new ClientStyleSheetManager()
+    : new ServerStyleSheetManager()
 )
 
 export {

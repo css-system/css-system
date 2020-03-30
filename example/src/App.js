@@ -156,7 +156,7 @@ const App = () => {
                 css={{
                   flex: "1",
                   color: todo.completed && "secondaryBackgroundText",
-                  textDecoration: todo.completed ? "line-through" : "normal",
+                  textDecoration: todo.completed ? "line-through" : "none",
                 }}
                 deps={[todo.completed]}
               >
