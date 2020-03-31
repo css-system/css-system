@@ -8,7 +8,17 @@ const CREATED_CLASS_NAMES_SEPARATOR = " "
 const isDev = process && process.env && process.env.NODE_ENV === "development"
 
 interface StyleSheet {
+  createdClassNames: Record<string, true>
   insertRule(rule: string): void
+}
+
+interface ClientStyleSheet extends StyleSheet {
+  remove(): void
+}
+
+interface ServerStyleSheet extends StyleSheet {
+  getStyleTag(): string
+  getStyleComponent(): JSX.Element
 }
 
 interface StyleSheetManager {
@@ -17,8 +27,13 @@ interface StyleSheetManager {
   removeStyleSheet(id: string): void
 }
 
-class ClientStyleSheet implements StyleSheet {
-  sheet: CSSStyleSheet
+interface ServerStyleSheetManager extends StyleSheetManager {
+  getStyleTags(): string
+  getStyleComponents(): JSX.Element[]
+}
+
+class ClientStyleSheet implements ClientStyleSheet {
+  element: HTMLStyleElement
   createdClassNames: Record<string, true> = {}
 
   constructor(id: string) {
@@ -41,24 +56,22 @@ class ClientStyleSheet implements StyleSheet {
       }
     }
 
-    this.sheet = element.sheet as CSSStyleSheet
+    this.element = element
   }
 
   insertRule(rule: string) {
-    this.sheet.insertRule(rule, this.sheet.cssRules.length)
+    const sheet = this.element.sheet as CSSStyleSheet
+    sheet.insertRule(rule, sheet.cssRules.length)
+  }
+
+  remove() {
+    this.element.remove()
   }
 }
 
 class DevClientStyleSheet extends ClientStyleSheet {
-  styleNode: HTMLStyleElement
-
-  constructor(id: string) {
-    super(id)
-    this.styleNode = this.sheet.ownerNode as HTMLStyleElement
-  }
-
   insertRule(rule: string) {
-    this.styleNode.textContent += rule
+    this.element.textContent += rule
   }
 }
 
@@ -77,6 +90,7 @@ class ClientStyleSheetManager implements StyleSheetManager {
   }
 
   removeStyleSheet(id: string) {
+    this.styleSheets[id].remove()
     delete this.styleSheets[id]
   }
 }
