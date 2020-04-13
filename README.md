@@ -132,6 +132,40 @@ const App = () => {
 }
 ```
 
+## Caveats
+
+`useCss`, `useGlobalCss` and `useKeyframes` only compute styles on first render or on theme change. This is what allow the library to consume anonymous objects without performance overhead.
+
+
+If you want dynamic styles, you can pass a dependency array as a second argument to `useCss`, `useGlobalCss` and `useKeyframes`, 
+
+```jsx
+// Here we pass the `deps` prop to useCss as a second argument
+const View = ({as: Component = "div", css, deps, ...props}) => {
+  const className = useCss({
+    display: "flex",
+    minWidth: 0,
+    minHeight: 0,
+    flex: "none",
+    alignItems: "stretch",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    ...css,
+  }, deps)
+
+  return <Component className={className} {...props} />
+}
+
+// Elsewhere in the application
+<View css={{bg: selected ? "primary" : "neutral"}} deps={[selected]}/>
+```
+
+Do not overuse this pattern, it is only recommended when all possible property values are known in advance and theme dependant. If it's not the case, simply use the native `style` prop. There is nothing wrong with it.
+
+```jsx
+<View css={{position: "fixed"}} style={{top: mouseEvent.clientY, left: mouseEvent.clientX}}/>
+```
+
 ## Gatsby support
 
 See [gatsby-plugin-css-system](https://github.com/css-system/gatsby-plugin-css-system)
