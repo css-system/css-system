@@ -90,7 +90,7 @@ Set responsive properties with a shorthand object syntax.
 
 ```jsx
 // _ means from 0px to the next defined breakpoint, here m
-<View css={{p: {_: 2, , m: 4}}} />
+<View css={{p: {_: 2, m: 4}}} />
 ```
 
 ## Relative selectors props
