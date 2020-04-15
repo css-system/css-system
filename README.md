@@ -107,10 +107,10 @@ You can create your own selectors by referencing the component with `&`.
 ## Global styles & keyframes
 
 ```jsx
-import {useGlobalCss, useKeyFrames} from "css-system"
+import {useGlobalCss, useKeyframes} from "css-system"
 
 const App = () => {
-  const fadeIn = useKeyFrames({
+  const fadeIn = useKeyframes({
     from: {
       opacity: 0,
     },
