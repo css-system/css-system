@@ -6,6 +6,7 @@
 // TypeScript Version: 3.1
 
 import * as CSS from "csstype"
+import {DefaultTheme} from "./themeContext"
 
 type StandardCSSProperties = CSS.PropertiesFallback<number | string>
 
@@ -22,8 +23,14 @@ type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
  *
  * For more information see: https://styled-system.com/responsive-styles
  */
-export type ResponsiveStyleValue<T> = T | Array<T | null>
 
+type BreakpointsWithFallback<B extends Theme["breakpoints"]> = {_: string} & B
+
+export type ResponsiveStyleValue<B extends Theme["breakpoints"], U> = Partial<
+  {
+    [K in keyof BreakpointsWithFallback<B>]: U
+  }
+>
 /**
  * All non-vendor-prefixed CSS properties. (Allow `number` to support CSS-in-JS libs,
  * since they are converted to pixels)
@@ -33,23 +40,16 @@ export interface CSSProperties
     CSS.SvgProperties<number | string> {}
 
 /**
- * Map of all CSS pseudo selectors (`:hover`, `:focus`, ...)
- */
-export type CSSPseudoSelectorProps = {[K in CSS.Pseudos]?: SystemStyleObject}
-
-/**
  * CSS as POJO that is compatible with CSS-in-JS libaries.
  * Copied directly from [emotion](https://github.com/emotion-js/emotion/blob/ca3ad1c1dcabf78a95b55cc2dc94cad1998a3196/packages/serialize/types/index.d.ts#L45) types
  */
 export interface CSSObject
   extends CSSPropertiesWithMultiValues,
-    CSSPseudosForCSSObject,
     CSSOthersObjectForCSSObject {}
 
 type CSSPropertiesWithMultiValues = {
   [K in keyof CSSProperties]: CSSProperties[K]
 }
-type CSSPseudosForCSSObject = {[K in CSS.Pseudos]?: CSSObject}
 type CSSInterpolation = undefined | number | string | CSSObject
 interface CSSOthersObjectForCSSObject {
   [propertiesName: string]: CSSInterpolation
@@ -58,8 +58,8 @@ interface CSSOthersObjectForCSSObject {
 /**
  * Map all nested selectors
  */
-interface CSSSelectorObject {
-  [cssSelector: string]: SystemStyleObject
+interface CSSSelectorObject<T extends Theme> {
+  [cssSelector: string]: SystemStyleObject<T>
 }
 
 interface AliasesCSSProperties {
@@ -349,48 +349,28 @@ interface AllSystemCSSProperties
     AliasesCSSProperties,
     OverwriteCSSProperties {}
 
-export type SystemCssProperties = {
-  [K in keyof AllSystemCSSProperties]:
-    | ResponsiveStyleValue<AllSystemCSSProperties[K]>
-    | ((theme: any) => ResponsiveStyleValue<AllSystemCSSProperties[K]>)
-    | SystemStyleObject
-}
-
-interface VariantProperty {
-  /**
-   * **`Variants`** can be useful for applying complex styles to a component based on a single prop.
-   *
-   * @example
-   * const theme = {
-   *   buttons: {
-   *     primary: {
-   *       p: 3,
-   *       fontWeight: 'bold',
-   *       color: 'white',
-   *       bg: 'primary',
-   *       borderRadius: 2,
-   *     },
-   *   },
-   * }
-   * const result = css({
-   *   variant: 'buttons.primary',
-   * })(theme)
-   *
-   * @see https://styled-system.com/variants
-   */
-  variant: string
-}
+export type SystemCssProperties<T extends Theme = DefaultTheme> =
+  | {
+      [K in keyof AllSystemCSSProperties]:
+        | ResponsiveStyleValue<T["breakpoints"], AllSystemCSSProperties[K]>
+        | AllSystemCSSProperties[K]
+    }
+  | {
+      [pseudoSelector: string]: SystemCssProperties<T>
+    }
 
 /**
  * The `SystemStyleObject` extends [style props](https://emotion.sh/docs/object-styles)
  * such that properties that are part of the `Theme` will be transformed to
  * their corresponding values. Other valid CSS properties are also allowed.
  */
-export type SystemStyleObject =
-  | SystemCssProperties
-  | CSSPseudoSelectorProps
-  | CSSSelectorObject
-  | VariantProperty
+export type SystemStyleObject<
+  T extends Theme = DefaultTheme
+> = SystemCssProperties<T>
+
+export type GlobalSystemStyleObject<
+  T extends Theme = DefaultTheme
+> = CSSSelectorObject<T>
 
 /**
  * Helper to define theme values.
@@ -399,27 +379,23 @@ export type SystemStyleObject =
  * E.g. `colors.light.primary`, `primary` has to be from type `CSS.ColorProperty`.
  */
 export type ThemeValue<T> =
-  | T[]
-  | {
+  | Readonly<T[]>
+  | Readonly<{
       [name: string]: T | ThemeValue<T>
-    }
+    }>
 
 /**
  * Object that defines the minimal specification of a theme. It follows
  * the [Theme Specification](https://styled-system.com/css/#theme-keys) for interoperability
  * with other libraries.
  */
-export type Theme =
-  | {[K in keyof StandardCSSProperties]: ThemeValue<StandardCSSProperties[K]>}
-  | Partial<ScaleThemeProperties>
-  | ThemeBreakPoints
-  | {[variantPart: string]: Theme}
+export type Theme = Readonly<ThemeBreakPoints & ScaleThemeProperties>
 
-interface ThemeBreakPoints {
+export type ThemeBreakPoints = {
   breakpoints: Record<string, string | number>
 }
 
-export interface ScaleThemeProperties {
+export type ScaleThemeProperties = {
   /**
    * | Prop                | CSS Property     | Theme Field |
    * | :------------------ | :--------------- | :---------- |

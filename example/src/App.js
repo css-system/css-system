@@ -8,9 +8,14 @@ import {Input} from "./Input"
 
 const initialTodos = [
   {
+    id: 5,
+    text: "Enhance DX through more accurate types",
+    completed: true,
+  },
+  {
     id: 4,
     text: "Create a typed helper for easy primitive creation",
-    completed: false,
+    completed: true,
   },
   {
     id: 3,
@@ -52,7 +57,7 @@ const App = () => {
 
   const [pendingTodo, setPendingTodo] = useState("")
 
-  const handlePendingTodoChange = event => {
+  const handlePendingTodoChange = (event) => {
     setPendingTodo(event.target.value)
   }
 
@@ -61,12 +66,12 @@ const App = () => {
     setTodos([{id: Date.now(), text: pendingTodo, completed: false}, ...todos])
   }
 
-  const handleTodoRemove = todoToRemove => {
-    setTodos(todos.filter(todo => todo !== todoToRemove))
+  const handleTodoRemove = (todoToRemove) => {
+    setTodos(todos.filter((todo) => todo !== todoToRemove))
   }
-  const handleTodoCompleteToggle = todoToComplete => {
+  const handleTodoCompleteToggle = (todoToComplete) => {
     setTodos(
-      todos.map(todo => {
+      todos.map((todo) => {
         if (todo !== todoToComplete) {
           return todo
         }
@@ -123,7 +128,7 @@ const App = () => {
           },
         }}
       >
-        {todos.map(todo => {
+        {todos.map((todo) => {
           return (
             <View
               key={todo.id}
