@@ -1,20 +1,20 @@
 import sum from "hash-sum"
 import {useContext, useEffect, useMemo} from "react"
 import {StyleSheetManagerContext} from "./stylesheet"
-import {ThemeContext} from "./themeContext"
-import {SystemCssProperties} from "./types"
+import {ThemeContext, DefaultTheme} from "./themeContext"
+import {SystemCssProperties, Theme} from "./types"
 import {computeRules} from "./computeRules"
 import {EMPTY_ARRAY} from "./constants"
 
-export const useKeyframes = (
-  keyframesObject: Record<string | number, SystemCssProperties>,
+export const useKeyframes = <T extends Theme = DefaultTheme>(
+  keyframesObject: Record<string | number, SystemCssProperties<T>>,
   deps: any[] = EMPTY_ARRAY
 ): string => {
   const styleSheetManager = useContext(StyleSheetManagerContext)
   const theme = useContext(ThemeContext)
 
   const id = useMemo(() => {
-    const id = `keyframes-${sum(keyframesObject)}`
+    const id = `keyframes-${sum({keyframesObject, theme})}`
     const styleSheet = styleSheetManager.createStyleSheet(id)
 
     let frames = ""

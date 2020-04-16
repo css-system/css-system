@@ -2,13 +2,13 @@ import sum from "hash-sum"
 import {useContext, useMemo} from "react"
 import {computeCssObject} from "./computeCssObject"
 import {StyleSheetManagerContext} from "./stylesheet"
-import {ThemeContext} from "./themeContext"
-import {SystemStyleObject} from "./types"
+import {ThemeContext, DefaultTheme} from "./themeContext"
+import {SystemStyleObject, Theme} from "./types"
 import {computeRulesObject} from "./computeRulesObject"
 import {EMPTY_ARRAY} from "./constants"
 
-export const useCss = (
-  systemObject: SystemStyleObject,
+export const useCss = <T extends Theme = DefaultTheme>(
+  systemObject: SystemStyleObject<T>,
   deps: any[] = EMPTY_ARRAY
 ): string => {
   const styleSheetManager = useContext(StyleSheetManagerContext)

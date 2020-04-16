@@ -1,16 +1,7 @@
-import {useCss} from "css-system"
-import React from "react"
+import {createLoosePrimitive} from "css-system"
 
-export const Text = ({as: Component = "span", css, deps, ...props}) => {
-  const className = useCss(
-    {
-      minWidth: 0,
-      minHeight: 0,
-      flex: "none",
-      ...css,
-    },
-    deps
-  )
-
-  return <Component className={className} {...props} />
-}
+export const Text = createLoosePrimitive("span", {
+  minWidth: 0,
+  minHeight: 0,
+  flex: "none",
+})

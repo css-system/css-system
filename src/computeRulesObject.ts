@@ -6,7 +6,7 @@ const populateRulesObject = (
   cssObject: CSSObject,
   acc: any
 ) => {
-  Object.keys(cssObject).forEach(key => {
+  Object.keys(cssObject).forEach((key) => {
     const value = cssObject[key]
     if (typeof value === "string" || typeof value === "number") {
       if (!acc[className]) {

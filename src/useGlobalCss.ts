@@ -2,20 +2,20 @@ import sum from "hash-sum"
 import {useContext, useEffect, useMemo} from "react"
 import {computeCssObject} from "./computeCssObject"
 import {StyleSheetManagerContext} from "./stylesheet"
-import {ThemeContext} from "./themeContext"
-import {SystemStyleObject} from "./types"
+import {ThemeContext, DefaultTheme} from "./themeContext"
+import {SystemStyleObject, Theme} from "./types"
 import {computeRulesObject} from "./computeRulesObject"
 import {EMPTY_ARRAY} from "./constants"
 
-export const useGlobalCss = (
-  systemObject: SystemStyleObject,
+export const useGlobalCss = <T extends Theme = DefaultTheme>(
+  systemObject: SystemStyleObject<T>,
   deps: any[] = EMPTY_ARRAY
 ): void => {
   const styleSheetManager = useContext(StyleSheetManagerContext)
   const theme = useContext(ThemeContext)
 
   const id = useMemo(() => {
-    const id = sum(systemObject)
+    const id = sum({systemObject, theme})
     const styleSheet = styleSheetManager.createStyleSheet(id)
 
     for (const globalSelector in systemObject) {
