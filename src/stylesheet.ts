@@ -2,13 +2,13 @@ import {createContext, createElement} from "react"
 
 const GLOBAL_ID = "global"
 const ID_ATTRIBUTE = "data-css-system-id"
-const CREATED_CLASS_NAMES_ATTRIBUTES = "data-css-system-class-names"
-const CREATED_CLASS_NAMES_SEPARATOR = " "
+const CREATED_IDS_ATTRIBUTE = "data-css-system-ids"
+const CREATED_IDS_SEPARATOR = " "
 
 const isDev = process && process.env && process.env.NODE_ENV === "development"
 
 interface StyleSheet {
-  createdClassNames: Record<string, true>
+  createdIds: Record<string, true>
   insertRule(rule: string): void
 }
 
@@ -34,7 +34,7 @@ interface ServerStyleSheetManager extends StyleSheetManager {
 
 class ClientStyleSheet implements ClientStyleSheet {
   element: HTMLStyleElement
-  createdClassNames: Record<string, true> = {}
+  createdIds: Record<string, true> = {}
 
   constructor(id: string) {
     let element = document.querySelector<HTMLStyleElement>(
@@ -46,13 +46,11 @@ class ClientStyleSheet implements ClientStyleSheet {
       element.setAttribute(ID_ATTRIBUTE, id)
       document.head.appendChild(element)
     } else {
-      const createdClassNames = element.getAttribute(
-        CREATED_CLASS_NAMES_ATTRIBUTES
-      )
-      if (createdClassNames !== null) {
-        createdClassNames
-          .split(CREATED_CLASS_NAMES_SEPARATOR)
-          .forEach(className => (this.createdClassNames[className] = true))
+      const createdIds = element.getAttribute(CREATED_IDS_ATTRIBUTE)
+      if (createdIds !== null) {
+        createdIds
+          .split(CREATED_IDS_SEPARATOR)
+          .forEach((id) => (this.createdIds[id] = true))
       }
     }
 
@@ -90,8 +88,10 @@ class ClientStyleSheetManager implements StyleSheetManager {
   }
 
   removeStyleSheet(id: string) {
-    this.styleSheets[id].remove()
-    delete this.styleSheets[id]
+    if (this.styleSheets[id]) {
+      this.styleSheets[id].remove()
+      delete this.styleSheets[id]
+    }
   }
 }
 class DevClientStyleSheetManager extends ClientStyleSheetManager {
@@ -108,7 +108,7 @@ class DevClientStyleSheetManager extends ClientStyleSheetManager {
 class ServerStyleSheet implements StyleSheet {
   id: string
   rules: string[] = []
-  createdClassNames: Record<string, true> = {}
+  createdIds: Record<string, true> = {}
 
   constructor(id: string) {
     this.id = id
@@ -121,17 +121,17 @@ class ServerStyleSheet implements StyleSheet {
   getStyleTag() {
     return `<style ${ID_ATTRIBUTE}="${
       this.id
-    }" ${CREATED_CLASS_NAMES_ATTRIBUTES}="${Object.keys(
-      this.createdClassNames
-    ).join(CREATED_CLASS_NAMES_SEPARATOR)}">${this.rules.join("\n")}</style>`
+    }" ${CREATED_IDS_ATTRIBUTE}="${Object.keys(this.createdIds).join(
+      CREATED_IDS_SEPARATOR
+    )}">${this.rules.join("\n")}</style>`
   }
 
   getStyleComponent() {
     return createElement("style", {
       [ID_ATTRIBUTE]: this.id,
-      [CREATED_CLASS_NAMES_ATTRIBUTES]: Object.keys(
-        this.createdClassNames
-      ).join(CREATED_CLASS_NAMES_SEPARATOR),
+      [CREATED_IDS_ATTRIBUTE]: Object.keys(this.createdIds).join(
+        CREATED_IDS_SEPARATOR
+      ),
       dangerouslySetInnerHTML: {__html: this.rules.join("\n")},
     })
   }
@@ -157,12 +157,12 @@ class ServerStyleSheetManager implements StyleSheetManager {
 
   getStyleTags() {
     return Object.values(this.styleSheets)
-      .map(styleSheet => styleSheet.getStyleTag())
+      .map((styleSheet) => styleSheet.getStyleTag())
       .join("\n")
   }
 
   getStyleComponents() {
-    return Object.values(this.styleSheets).map(styleSheet =>
+    return Object.values(this.styleSheets).map((styleSheet) =>
       styleSheet.getStyleComponent()
     )
   }

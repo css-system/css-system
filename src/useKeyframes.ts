@@ -15,25 +15,28 @@ export const useKeyframes = <T extends Theme = DefaultTheme>(
 
   const id = useMemo(() => {
     const id = `keyframes-${sum({keyframesObject, theme})}`
-    const styleSheet = styleSheetManager.createStyleSheet(id)
 
-    let frames = ""
+    const styleSheet = styleSheetManager.getGlobalStyleSheet()
 
-    for (const key in keyframesObject) {
-      const systemObject = keyframesObject[key]
-      const selector = isNaN(key as any) ? key : `${key}%`
-      const rules = computeRules(systemObject, theme)
-      frames += `${selector}{${rules}}`
+    if (!styleSheet.createdIds[id]) {
+      let frames = ""
+
+      for (const key in keyframesObject) {
+        const systemObject = keyframesObject[key]
+        const selector = isNaN(key as any) ? key : `${key}%`
+        const rules = computeRules(systemObject, theme)
+        frames += `${selector}{${rules}}`
+      }
+
+      styleSheet.insertRule(`@keyframes ${id}{${frames}}`)
+
+      styleSheet.createdIds[id] = true
     }
-
-    styleSheet.insertRule(`@keyframes ${id}{${frames}}`)
 
     return id
     // Assume that systemObject is stable
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme, ...deps])
-
-  useEffect(() => () => styleSheetManager.removeStyleSheet(id), [id, theme])
 
   return id
 }

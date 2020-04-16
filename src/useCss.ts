@@ -21,7 +21,7 @@ export const useCss = <T extends Theme = DefaultTheme>(
 
     const styleSheet = styleSheetManager.getGlobalStyleSheet()
 
-    if (!styleSheet.createdClassNames[className]) {
+    if (!styleSheet.createdIds[className]) {
       const rulesObject = computeRulesObject(cssObject)
 
       const rulesKeys = Object.keys(rulesObject).sort((ruleKeyA, ruleKeyB) => {
@@ -55,7 +55,7 @@ export const useCss = <T extends Theme = DefaultTheme>(
         }
       }
 
-      styleSheet.createdClassNames[className] = true
+      styleSheet.createdIds[className] = true
     }
 
     return className
