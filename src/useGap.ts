@@ -1,11 +1,16 @@
-import {SystemStyleObject, Theme} from "./types"
+import {SystemStyleObject, Theme, ResponsiveStyleValue} from "./types"
 import {useMemo, useContext} from "react"
 import {ThemeContext, DefaultTheme} from "./themeContext"
 
 export const useGap = <T extends Theme = DefaultTheme>({
   gap,
   ...otherCssProps
-}: SystemStyleObject<T>): SystemStyleObject<T> => {
+}: SystemStyleObject<T> & {
+  gap?:
+    | string
+    | number
+    | ResponsiveStyleValue<T["breakpoints"], string | number>
+}): SystemStyleObject<T> => {
   const flexDirection = otherCssProps.flexDirection
   const theme = useContext(ThemeContext)
   const gapCssProps = useMemo(() => {
