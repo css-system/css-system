@@ -54,10 +54,13 @@ export const createStrictPrimitive = <
     const theme = useContext(ThemeContext)
     const cssClassName = useCss(mergeDefaultcss(css, theme), deps)
     const mergedProps = mergeDefaultProps(props, theme)
+    const mergedClassName = className
+      ? `${className} ${cssClassName}`
+      : cssClassName
 
     return renderAs({
       ...mergedProps,
-      className: `${cssClassName} ${className || ""}`,
+      className: mergedClassName,
     })
   }
 }

@@ -41,13 +41,12 @@ export const createLoosePrimitive = <
       const theme = useContext(ThemeContext)
       const cssClassName = useCss(mergeDefaultCss(css, theme), deps)
       const mergedProps = mergeDefaultProps(props, theme)
+      const mergedClassName = className
+        ? `${className} ${cssClassName}`
+        : cssClassName
 
       return (
-        <Component
-          ref={ref}
-          {...mergedProps}
-          className={`${cssClassName} ${className || ""}`}
-        />
+        <Component ref={ref} {...mergedProps} className={mergedClassName} />
       )
     }
   ) as React.ForwardRefExoticComponent<PrimitiveProps<T>>
