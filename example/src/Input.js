@@ -1,9 +1,8 @@
-import {useCss} from "css-system"
-import React from "react"
+import {createPrimitive} from "css-system"
 
-export const Input = ({as: Component = "input", css = {}, deps, ...props}) => {
-  const className = useCss(
-    {
+export const Input = createPrimitive("input", ({css = {}, ...props}) => {
+  return {
+    css: {
       py: {_: 2, m: 3},
       px: {_: 3, m: 4},
       bg: "lightPrimary",
@@ -13,7 +12,6 @@ export const Input = ({as: Component = "input", css = {}, deps, ...props}) => {
       minHeight: 0,
       flex: "none",
       fontSize: "inherit",
-
       ...css,
       "&:disabled": {
         cursor: "not-allowed",
@@ -21,8 +19,6 @@ export const Input = ({as: Component = "input", css = {}, deps, ...props}) => {
         ...css["&:disabled"],
       },
     },
-    deps
-  )
-
-  return <Component className={className} {...props} />
-}
+    ...props,
+  }
+})

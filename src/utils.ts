@@ -60,11 +60,3 @@ export const addUnitIfNeeded = (name: string, value: unknown): string => {
 
 export const camelCaseToSnakeCase = (prop: string): string =>
   prop.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`)
-
-export const valueOrMergeWith = (value) =>
-  typeof value === "function"
-    ? value
-    : (props) => ({
-        ...value,
-        ...props,
-      })
