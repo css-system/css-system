@@ -1,6 +1,6 @@
-import {createLoosePrimitive} from "css-system"
+import {createPrimitive} from "css-system"
 
-export const Text = createLoosePrimitive("span", {
+export const Text = createPrimitive("span", {
   minWidth: 0,
   minHeight: 0,
   flex: "none",

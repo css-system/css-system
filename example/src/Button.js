@@ -1,14 +1,8 @@
-import {useCss} from "css-system"
-import React from "react"
+import {createPrimitive} from "css-system"
 
-export const Button = ({
-  as: Component = "button",
-  css = {},
-  deps,
-  ...props
-}) => {
-  const className = useCss(
-    {
+export const Button = createPrimitive("button", ({css = {}, ...props}) => {
+  return {
+    css: {
       py: {_: 2, m: 3},
       px: {_: 3, m: 4},
       bg: "primary",
@@ -27,8 +21,6 @@ export const Button = ({
         ...css["&:disabled"],
       },
     },
-    deps
-  )
-
-  return <Component className={className} {...props} />
-}
+    ...props,
+  }
+})
