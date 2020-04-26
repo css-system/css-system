@@ -13,6 +13,13 @@ type PrimitiveProps<T extends Theme = DefaultTheme> = {
 
 type ValueOrMergeWith<T, U> = T | ((value: U) => U)
 
+const createMergeProps = <T extends Theme = DefaultTheme>(
+  defaultCss: SystemStyleObject<T>
+) => ({css, ...props}: PrimitiveProps<T>): PrimitiveProps<T> => ({
+  css: {...defaultCss, ...css},
+  ...props,
+})
+
 export const createPrimitive = <T extends Theme = DefaultTheme>(
   defaultComponent: React.ReactType,
   defaultCssOrMergeProps?: ValueOrMergeWith<
@@ -23,10 +30,7 @@ export const createPrimitive = <T extends Theme = DefaultTheme>(
   const mergeProps =
     typeof defaultCssOrMergeProps === "function"
       ? defaultCssOrMergeProps
-      : <X extends {}>(props: X): X => ({
-          css: defaultCssOrMergeProps,
-          ...props,
-        })
+      : createMergeProps<T>(defaultCssOrMergeProps)
 
   return React.forwardRef((props: PrimitiveProps<T>, ref) => {
     const {
@@ -67,10 +71,7 @@ export const extendPrimitive = <T extends Theme = DefaultTheme>(
   const mergeProps =
     typeof defaultCssOrMergeProps === "function"
       ? defaultCssOrMergeProps
-      : <X extends {}>(props: X): X => ({
-          css: defaultCssOrMergeProps,
-          ...props,
-        })
+      : createMergeProps<T>(defaultCssOrMergeProps)
 
   return React.forwardRef((props: ExtendedPrimitiveProps<T>, ref) => {
     const {css, ...mergedProps} = mergeProps(props)
