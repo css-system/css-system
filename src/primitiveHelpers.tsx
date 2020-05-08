@@ -3,34 +3,41 @@ import {DefaultTheme} from "./themeContext"
 import {SystemStyleObject, Theme} from "./types"
 import {useCss} from "./useCss"
 
-type PrimitiveProps<T extends Theme = DefaultTheme> = {
-  as?: any
+type BasePrimitiveProps<T extends Theme> = {
   css?: SystemStyleObject<T>
-  deps?: any[]
-  className?: string
   [key: string]: any
 }
 
-type ValueOrMergeWith<T, U> = T | ((value: U) => U)
+type PrimitiveProps<T extends Theme> = BasePrimitiveProps<T> & {
+  as?: any
+  deps?: any[]
+  className?: string
+}
 
-const createMergeProps = <T extends Theme = DefaultTheme>(
-  defaultCss: SystemStyleObject<T>
-) => ({css, ...props}: PrimitiveProps<T>): PrimitiveProps<T> => ({
-  css: {...defaultCss, ...css},
-  ...props,
-})
+type ValueOrMergeWith<T> = T | ((value: T) => T)
 
-export const createPrimitive = <T extends Theme = DefaultTheme>(
+const createMergeProps = <U extends BasePrimitiveProps<T>, T extends Theme>({
+  css: defaultCss,
+  ...defaultProps
+}: U) => ({css, ...props}: U): U => {
+  return {
+    ...defaultProps,
+    css: {
+      ...defaultCss,
+      ...css,
+    },
+    ...props,
+  } as U
+}
+
+export const createPrimitive = <T extends Theme>(
   defaultComponent: React.ReactType,
-  defaultCssOrMergeProps?: ValueOrMergeWith<
-    SystemStyleObject<T>,
-    PrimitiveProps<T>
-  >
+  defaultCssOrMergeProps?: ValueOrMergeWith<PrimitiveProps<T>>
 ) => {
   const mergeProps =
     typeof defaultCssOrMergeProps === "function"
       ? defaultCssOrMergeProps
-      : createMergeProps<T>(defaultCssOrMergeProps)
+      : createMergeProps<PrimitiveProps<T>, T>(defaultCssOrMergeProps)
 
   return React.forwardRef((props: PrimitiveProps<T>, ref) => {
     const {
@@ -53,29 +60,26 @@ export const createPrimitive = <T extends Theme = DefaultTheme>(
         className={mergedClassName}
       ></Component>
     )
-  })
+  }) as React.ForwardRefExoticComponent<PrimitiveProps<T>>
 }
 
-type ExtendedPrimitiveProps<T extends Theme = DefaultTheme> = {
+type ExtendedPrimitiveProps<T extends Theme> = {
   css?: SystemStyleObject<T>
   [key: string]: any
 }
 
-export const extendPrimitive = <T extends Theme = DefaultTheme>(
+export const extendPrimitive = <T extends Theme>(
   Primitive: React.ReactType<ExtendedPrimitiveProps<T>>,
-  defaultCssOrMergeProps?: ValueOrMergeWith<
-    SystemStyleObject<T>,
-    ExtendedPrimitiveProps<T>
-  >
+  defaultCssOrMergeProps?: ValueOrMergeWith<ExtendedPrimitiveProps<T>>
 ) => {
   const mergeProps =
     typeof defaultCssOrMergeProps === "function"
       ? defaultCssOrMergeProps
-      : createMergeProps<T>(defaultCssOrMergeProps)
+      : createMergeProps<ExtendedPrimitiveProps<T>, T>(defaultCssOrMergeProps)
 
   return React.forwardRef((props: ExtendedPrimitiveProps<T>, ref) => {
     const {css, ...mergedProps} = mergeProps(props)
 
     return <Primitive ref={ref} css={css} {...mergedProps} />
-  })
+  }) as React.ForwardRefExoticComponent<ExtendedPrimitiveProps<T>>
 }

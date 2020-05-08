@@ -2,17 +2,17 @@ import sum from "hash-sum"
 import {useContext, useMemo} from "react"
 import {computeCssObject} from "./computeCssObject"
 import {StyleSheetManagerContext} from "./stylesheet"
-import {ThemeContext, DefaultTheme} from "./themeContext"
+import {ThemeContext} from "./themeContext"
 import {SystemStyleObject, Theme} from "./types"
 import {computeRulesObject} from "./computeRulesObject"
 import {EMPTY_ARRAY} from "./constants"
 
-export const useCss = <T extends Theme = DefaultTheme>(
+export const useCss = <T extends Theme>(
   systemObject: SystemStyleObject<T>,
   deps: any[] = EMPTY_ARRAY
 ): string => {
   const styleSheetManager = useContext(StyleSheetManagerContext)
-  const theme = useContext(ThemeContext)
+  const theme = useContext(ThemeContext) as Theme
 
   const className = useMemo(() => {
     const cssObject = computeCssObject(systemObject, theme)

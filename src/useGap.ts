@@ -2,7 +2,7 @@ import {SystemStyleObject, Theme, ResponsiveStyleValue} from "./types"
 import {useMemo, useContext} from "react"
 import {ThemeContext, DefaultTheme} from "./themeContext"
 
-export const useGap = <T extends Theme = DefaultTheme>({
+export const useGap = <T extends Theme>({
   gap,
   ...otherCssProps
 }: SystemStyleObject<T> & {

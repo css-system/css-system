@@ -349,7 +349,7 @@ interface AllSystemCSSProperties
     AliasesCSSProperties,
     OverwriteCSSProperties {}
 
-export type SystemCssProperties<T extends Theme = DefaultTheme> =
+export type SystemCssProperties<T extends Theme> =
   | {
       [K in keyof AllSystemCSSProperties]:
         | ResponsiveStyleValue<T["breakpoints"], AllSystemCSSProperties[K]>
@@ -364,13 +364,9 @@ export type SystemCssProperties<T extends Theme = DefaultTheme> =
  * such that properties that are part of the `Theme` will be transformed to
  * their corresponding values. Other valid CSS properties are also allowed.
  */
-export type SystemStyleObject<
-  T extends Theme = DefaultTheme
-> = SystemCssProperties<T>
+export type SystemStyleObject<T extends Theme> = SystemCssProperties<T>
 
-export type GlobalSystemStyleObject<
-  T extends Theme = DefaultTheme
-> = CSSSelectorObject<T>
+export type GlobalSystemStyleObject<T extends Theme> = CSSSelectorObject<T>
 
 /**
  * Helper to define theme values.
@@ -379,17 +375,17 @@ export type GlobalSystemStyleObject<
  * E.g. `colors.light.primary`, `primary` has to be from type `CSS.ColorProperty`.
  */
 export type ThemeValue<T> =
-  | Readonly<T[]>
-  | Readonly<{
+  | T[]
+  | {
       [name: string]: T | ThemeValue<T>
-    }>
+    }
 
 /**
  * Object that defines the minimal specification of a theme. It follows
  * the [Theme Specification](https://styled-system.com/css/#theme-keys) for interoperability
  * with other libraries.
  */
-export type Theme = Readonly<ThemeBreakPoints & ScaleThemeProperties>
+export type Theme = ThemeBreakPoints & ScaleThemeProperties
 
 export type ThemeBreakPoints = {
   breakpoints: Record<string, string | number>

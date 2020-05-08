@@ -7,7 +7,7 @@ import {SystemStyleObject, Theme} from "./types"
 import {computeRulesObject} from "./computeRulesObject"
 import {EMPTY_ARRAY} from "./constants"
 
-export const useGlobalCss = <T extends Theme = DefaultTheme>(
+export const useGlobalCss = <T extends Theme>(
   systemObject: SystemStyleObject<T>,
   deps: any[] = EMPTY_ARRAY
 ): void => {

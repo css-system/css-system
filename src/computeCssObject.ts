@@ -2,7 +2,10 @@ import {aliases, multiples, scales} from "./constants"
 import {CSSObject, SystemStyleObject, Theme} from "./types"
 import {get, transforms} from "./utils"
 
-const responsive = (systemObject: SystemStyleObject, theme: Theme) => {
+const responsive = <T extends Theme>(
+  systemObject: SystemStyleObject<T>,
+  theme: T
+) => {
   const next = {}
   const breakpoints = get(theme, "breakpoints")
 
@@ -46,9 +49,9 @@ const responsive = (systemObject: SystemStyleObject, theme: Theme) => {
   return next
 }
 
-export const computeCssObject = (
-  systemObject: SystemStyleObject,
-  theme: Theme
+export const computeCssObject = <T extends Theme>(
+  systemObject: SystemStyleObject<T>,
+  theme: T
 ): CSSObject => {
   let result = {}
   const styles = responsive(systemObject, theme)

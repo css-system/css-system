@@ -6,12 +6,12 @@ import {SystemCssProperties, Theme} from "./types"
 import {computeRules} from "./computeRules"
 import {EMPTY_ARRAY} from "./constants"
 
-export const useKeyframes = <T extends Theme = DefaultTheme>(
+export const useKeyframes = <T extends Theme>(
   keyframesObject: Record<string | number, SystemCssProperties<T>>,
   deps: any[] = EMPTY_ARRAY
 ): string => {
   const styleSheetManager = useContext(StyleSheetManagerContext)
-  const theme = useContext(ThemeContext)
+  const theme = useContext(ThemeContext) as Theme
 
   const id = useMemo(() => {
     const id = `keyframes-${sum({keyframesObject, theme})}`

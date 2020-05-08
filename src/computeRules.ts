@@ -1,10 +1,10 @@
 import {SystemCssProperties, Theme} from "./types"
-import {unitlessCssProperties, aliases, scales, multiples} from "./constants"
+import {aliases, scales, multiples} from "./constants"
 import {transforms, get, camelCaseToSnakeCase, addUnitIfNeeded} from "./utils"
 
-export const computeRules = (
-  systemObject: SystemCssProperties,
-  theme: Theme
+export const computeRules = <T extends Theme>(
+  systemObject: SystemCssProperties<T>,
+  theme: T
 ): string => {
   let result = ""
 
