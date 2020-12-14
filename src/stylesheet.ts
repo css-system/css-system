@@ -69,7 +69,7 @@ class ClientStyleSheet implements ClientStyleSheet {
 
 class DevClientStyleSheet extends ClientStyleSheet {
   insertRule(rule: string) {
-    this.element.textContent += rule
+    this.element.textContent += rule + '\n'
   }
 }
 

@@ -1,11 +1,11 @@
 import sum from "hash-sum"
 import {useContext, useEffect, useMemo} from "react"
 import {computeCssObject} from "./computeCssObject"
-import {StyleSheetManagerContext} from "./stylesheet"
-import {ThemeContext, DefaultTheme} from "./themeContext"
-import {SystemStyleObject, Theme} from "./types"
 import {computeRulesObject} from "./computeRulesObject"
 import {EMPTY_ARRAY} from "./constants"
+import {StyleSheetManagerContext} from "./stylesheet"
+import {ThemeContext} from "./themeContext"
+import {SystemStyleObject, Theme} from "./types"
 
 export const useGlobalCss = <T extends Theme>(
   systemObject: SystemStyleObject<T>,
@@ -29,7 +29,9 @@ export const useGlobalCss = <T extends Theme>(
 
       for (const ruleKey of rulesKeys) {
         if (typeof rulesObject[ruleKey] === "string") {
-          const selector = ruleKey.replace(/&/g, globalSelector)
+          const selector = ruleKey
+            .replace(/&/g, globalSelector)
+            .replace(/#\d#/, "")
           const declaration = rulesObject[ruleKey]
 
           styleSheet.insertRule(`${selector}{${declaration}}`)
@@ -44,14 +46,14 @@ export const useGlobalCss = <T extends Theme>(
             ruleContent += `${selector}{${declaration}}`
           }
 
-          styleSheet.insertRule(`${identifier}{${ruleContent}}`)
+          styleSheet.insertRule(
+            `${identifier.replace(/#\d#/, "")}{${ruleContent}}`
+          )
         }
       }
     }
 
     return id
-    // Assume that systemObject is stable
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme, ...deps])
 
   useEffect(() => () => styleSheetManager.removeStyleSheet(id), [

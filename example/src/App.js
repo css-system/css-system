@@ -1,10 +1,9 @@
 import {useGlobalCss, useKeyframes} from "css-system"
 import React, {useState} from "react"
-import {ThemeProvider} from "./ThemeProvider"
-import {View} from "./View"
 import {Button} from "./Button"
-import {Text} from "./Text"
 import {Input} from "./Input"
+import {Text} from "./Text"
+import {View} from "./View"
 
 const initialTodos = [
   {
@@ -34,7 +33,7 @@ const initialTodos = [
   },
 ]
 
-const App = () => {
+export const App = () => {
   const [todos, setTodos] = useState(initialTodos)
 
   const fadeIn = useKeyframes({
@@ -175,9 +174,3 @@ const App = () => {
     </View>
   )
 }
-
-export default () => (
-  <ThemeProvider>
-    <App />
-  </ThemeProvider>
-)

@@ -1,24 +1,30 @@
+import {CSS_SYSTEM_CONFIG} from "./config"
 import {SystemCssProperties, Theme} from "./types"
-import {aliases, scales, multiples} from "./constants"
-import {transforms, get, camelCaseToSnakeCase, addUnitIfNeeded} from "./utils"
+import {
+  addUnitIfNeeded,
+  camelCaseToSnakeCase,
+  get,
+  positiveOrNegative,
+} from "./utils"
 
 export const computeRules = <T extends Theme>(
   systemObject: SystemCssProperties<T>,
-  theme: T
+  theme: Theme
 ): string => {
   let result = ""
 
   for (const key in systemObject) {
-    const x = systemObject[key]
-    const val = typeof x === "function" ? x(theme) : x
-    const prop = get(aliases, key, key)
-    const scaleName = get(scales, prop)
+    const val = systemObject[key]
+    const prop = get(CSS_SYSTEM_CONFIG.propertyAliases, key, key)
+    const scaleName = get(CSS_SYSTEM_CONFIG.propertyScales, prop)
     const scale = get(theme, scaleName, get(theme, prop, {}))
-    const transform = get(transforms, prop, get)
-    const value = transform(scale, val, val)
+    const value =
+      prop in CSS_SYSTEM_CONFIG.negativeProperties
+        ? positiveOrNegative(scale, val)
+        : get(scale, val, val)
 
-    if (multiples[prop]) {
-      const dirs = multiples[prop]
+    if (CSS_SYSTEM_CONFIG.multiplePropertyAliases[prop]) {
+      const dirs = CSS_SYSTEM_CONFIG.multiplePropertyAliases[prop]
 
       for (let i = 0; i < dirs.length; i++) {
         result +=

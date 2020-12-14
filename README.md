@@ -5,7 +5,7 @@
 [npm-badge]: https://img.shields.io/npm/v/css-system.svg?style=flat-square
 [npm]: https://www.npmjs.org/package/css-system
 
-React hooks for building versatile design primitives.
+React hooks and helpers for building versatile design primitives.
 
 It follow the [theme ui specifications](https://github.com/system-ui/theme-specification) and was heavily influenced by [styled-system](https://github.com/styled-system/styled-system).
 
@@ -22,37 +22,39 @@ yarn add css-system
 
 ## Try It Out
 
-You can run the example todo list app by cloning this project and running the following command at the project root
-
-```sh
-yarn && yarn --cwd example && yarn --cwd example start
-```
+You can run the example todo list app by cloning this project and running `yarn example:start` at the project root.
 
 ## Usage
 
+```js
+import {createPrimitive, useGap} from "css-system"
+
+export const View = createPrimitive("div", ({css, ...props}) => {
+  return {
+    css: useGap({
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "stretch",
+      justifyContent: "flex-start",
+      minWidth: 0,
+      minHeight: 0,
+      flex: "none",
+      ...css,
+    }),
+    ...props,
+  }
+})
+
+export const Row = extendPrimitive(View, {
+  flexDirection: "column",
+  alignItems: "baseline",
+})
+```
+
 ```jsx
-import React from "react"
-import {useCss} from "css-system"
-
-// Create your own design primitive and chose its default style
-const View = ({as: Component = "div", css, ...props}) => {
-  const className = useCss({
-    display: "flex",
-    minWidth: 0,
-    minHeight: 0,
-    flex: "none",
-    alignItems: "stretch",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    ...css,
-  })
-
-  return <Component className={className} {...props} />
-}
-
 // Easily create great ui using it
 export const App = () => (
-  <View css={{color: "primary", fontSize: 4}}>Hello world</View>
+  <View css={{color: "primary", fontSize: 4}}>Hello world !</View>
 )
 ```
 
@@ -136,34 +138,43 @@ const App = () => {
 
 `useCss`, `useGlobalCss` and `useKeyframes` only compute styles on first render or on theme change. This is what allow the library to consume anonymous objects without performance overhead.
 
-
-If you want dynamic styles, you can pass a dependency array as a second argument to `useCss`, `useGlobalCss` and `useKeyframes`, 
+If you want dynamic styles, you can pass a dependency array as a second argument to `useCss`, `useGlobalCss` and `useKeyframes`.
 
 ```jsx
 // Here we pass the `deps` prop to useCss as a second argument
 const View = ({as: Component = "div", css, deps, ...props}) => {
-  const className = useCss({
-    display: "flex",
-    minWidth: 0,
-    minHeight: 0,
-    flex: "none",
-    alignItems: "stretch",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    ...css,
-  }, deps)
+  const className = useCss(
+    {
+      display: "flex",
+      minWidth: 0,
+      minHeight: 0,
+      flex: "none",
+      alignItems: "stretch",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      ...css,
+    },
+    deps
+  )
 
   return <Component className={className} {...props} />
 }
+```
 
+Components created with `createPrimitive` or `extendPrimitive` already implements this behavior.
+
+```jsx
 // Elsewhere in the application
-<View css={{bg: selected ? "primary" : "neutral"}} deps={[selected]}/>
+<View css={{bg: selected ? "primary" : "neutral"}} deps={[selected]} />
 ```
 
 Do not overuse this pattern, it is only recommended when all possible property values are known in advance and theme dependant. If it's not the case, simply use the native `style` prop. There is nothing wrong with it.
 
 ```jsx
-<View css={{position: "fixed"}} style={{top: mouseEvent.clientY, left: mouseEvent.clientX}}/>
+<View
+  css={{position: "fixed"}}
+  style={{top: mouseEvent.clientY, left: mouseEvent.clientX}}
+/>
 ```
 
 ## Gatsby support
@@ -176,6 +187,7 @@ See [gatsby-plugin-css-system](https://github.com/css-system/gatsby-plugin-css-s
 
 ## Built with css-system
 
-- [Amstangram](https://amstangr.am)
+- [https://amstangr.am](https://amstangr.am)
+- [https://cedricdelpoux.fr/](https://cedricdelpoux.fr/)
 
 [MIT License](LICENSE.md)

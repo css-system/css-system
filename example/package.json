@@ -4,14 +4,14 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@babel/preset-env": "7.9.0",
-    "@babel/register": "7.9.0",
+    "@babel/preset-env": "7.12.7",
+    "@babel/register": "7.12.1",
     "css-system": "link:..",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "react": "link:../node_modules/react",
     "react-dom": "link:../node_modules/react-dom",
-    "react-scripts": "3.4.1"
+    "react-scripts": "4.0.1"
   },
   "scripts": {
     "dev": "react-scripts start",

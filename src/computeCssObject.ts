@@ -1,19 +1,19 @@
-import {aliases, multiples, scales} from "./constants"
-import {CSSObject, SystemStyleObject, Theme} from "./types"
-import {get, transforms} from "./utils"
+import {CSS_SYSTEM_CONFIG} from "./config"
+import {SystemStyleObject, Theme} from "./types"
+import {get, positiveOrNegative} from "./utils"
 
 const responsive = <T extends Theme>(
   systemObject: SystemStyleObject<T>,
-  theme: T
+  theme: Theme
 ) => {
   const next = {}
   const breakpoints = get(theme, "breakpoints")
 
-  const mediaQueries = Object.keys(breakpoints).reduce(
-    (acc, breakpointKey) => {
+  const mediaQueries = Object.entries(breakpoints).reduce(
+    (acc, [key, value], index) => {
       return {
         ...acc,
-        [breakpointKey]: `@media screen and (min-width: ${breakpoints[breakpointKey]})`,
+        [key]: `@media screen and (min-width: #${index}#${value})`,
       }
     },
     {_: null}
@@ -23,11 +23,16 @@ const responsive = <T extends Theme>(
     const value = systemObject[key]
     const type = typeof value
 
-    if (value == null || Array.isArray(value)) {
+    if (value == null) {
       continue
     }
 
-    if (key.includes("&") || type === "string" || type === "number") {
+    if (
+      key.includes("&") ||
+      key.startsWith("@") ||
+      type === "string" ||
+      type === "number"
+    ) {
       next[key] = value
       continue
     }
@@ -51,36 +56,28 @@ const responsive = <T extends Theme>(
 
 export const computeCssObject = <T extends Theme>(
   systemObject: SystemStyleObject<T>,
-  theme: T
-): CSSObject => {
+  theme: Theme
+) => {
   let result = {}
   const styles = responsive(systemObject, theme)
   for (const key in styles) {
-    const x = styles[key]
-    const val = typeof x === "function" ? x(theme) : x
-
-    if (key === "variant") {
-      const variant = computeCssObject(get(theme, val), theme)
-      result = {
-        ...result,
-        ...variant,
-      }
-      continue
-    }
+    const val = styles[key]
 
     if (val && typeof val === "object") {
       result[key] = computeCssObject(val, theme)
       continue
     }
 
-    const prop = get(aliases, key, key)
-    const scaleName = get(scales, prop)
+    const prop = get(CSS_SYSTEM_CONFIG.propertyAliases, key, key)
+    const scaleName = get(CSS_SYSTEM_CONFIG.propertyScales, prop)
     const scale = get(theme, scaleName, get(theme, prop, {}))
-    const transform = get(transforms, prop, get)
-    const value = transform(scale, val, val)
+    const value =
+      prop in CSS_SYSTEM_CONFIG.negativeProperties
+        ? positiveOrNegative(scale, val)
+        : get(scale, val, val)
 
-    if (multiples[prop]) {
-      const dirs = multiples[prop]
+    if (CSS_SYSTEM_CONFIG.multiplePropertyAliases[prop]) {
+      const dirs = CSS_SYSTEM_CONFIG.multiplePropertyAliases[prop]
 
       for (let i = 0; i < dirs.length; i++) {
         result[dirs[i]] = value

@@ -1,10 +1,10 @@
 import sum from "hash-sum"
-import {useContext, useEffect, useMemo} from "react"
-import {StyleSheetManagerContext} from "./stylesheet"
-import {ThemeContext, DefaultTheme} from "./themeContext"
-import {SystemCssProperties, Theme} from "./types"
+import {useContext, useMemo} from "react"
 import {computeRules} from "./computeRules"
 import {EMPTY_ARRAY} from "./constants"
+import {StyleSheetManagerContext} from "./stylesheet"
+import {ThemeContext} from "./themeContext"
+import {SystemCssProperties, Theme} from "./types"
 
 export const useKeyframes = <T extends Theme>(
   keyframesObject: Record<string | number, SystemCssProperties<T>>,
@@ -34,8 +34,6 @@ export const useKeyframes = <T extends Theme>(
     }
 
     return id
-    // Assume that systemObject is stable
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme, ...deps])
 
   return id

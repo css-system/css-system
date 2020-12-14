@@ -1,6 +1,6 @@
-import {SystemStyleObject, Theme, ResponsiveStyleValue} from "./types"
-import {useMemo, useContext} from "react"
-import {ThemeContext, DefaultTheme} from "./themeContext"
+import {useContext, useMemo} from "react"
+import {ThemeContext} from "./themeContext"
+import {ResponsiveStyleValue, SystemStyleObject, Theme} from "./types"
 
 export const useGap = <T extends Theme>({
   gap,

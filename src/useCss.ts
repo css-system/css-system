@@ -1,11 +1,11 @@
 import sum from "hash-sum"
 import {useContext, useMemo} from "react"
 import {computeCssObject} from "./computeCssObject"
+import {computeRulesObject} from "./computeRulesObject"
+import {EMPTY_ARRAY} from "./constants"
 import {StyleSheetManagerContext} from "./stylesheet"
 import {ThemeContext} from "./themeContext"
 import {SystemStyleObject, Theme} from "./types"
-import {computeRulesObject} from "./computeRulesObject"
-import {EMPTY_ARRAY} from "./constants"
 
 export const useCss = <T extends Theme>(
   systemObject: SystemStyleObject<T>,
@@ -24,15 +24,9 @@ export const useCss = <T extends Theme>(
     if (!styleSheet.createdIds[className]) {
       const rulesObject = computeRulesObject(cssObject)
 
-      const rulesKeys = Object.keys(rulesObject).sort((ruleKeyA, ruleKeyB) => {
-        if (ruleKeyA[0] === "@" && ruleKeyB[0] === "@") {
-          return 0
-        }
-        if (ruleKeyA[0] === "@" && ruleKeyB[0] !== "@") {
-          return 1
-        }
-        return -1
-      })
+      const rulesKeys = Object.keys(rulesObject).sort((a, b) =>
+        a < b ? -1 : a > b ? 1 : 0
+      )
 
       for (const ruleKey of rulesKeys) {
         if (typeof rulesObject[ruleKey] === "string") {
@@ -51,7 +45,9 @@ export const useCss = <T extends Theme>(
             ruleContent += `${selector}{${declaration}}`
           }
 
-          styleSheet.insertRule(`${identifier}{${ruleContent}}`)
+          styleSheet.insertRule(
+            `${identifier.replace(/#\d#/, "")}{${ruleContent}}`
+          )
         }
       }
 
@@ -59,8 +55,6 @@ export const useCss = <T extends Theme>(
     }
 
     return className
-    // Assume that systemObject is stable
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme, ...deps])
 
   return className

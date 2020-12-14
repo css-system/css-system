@@ -1,5 +1,4 @@
 import React from "react"
-import {DefaultTheme} from "./themeContext"
 import {SystemStyleObject, Theme} from "./types"
 import {useCss} from "./useCss"
 
@@ -31,7 +30,7 @@ const createMergeProps = <U extends BasePrimitiveProps<T>, T extends Theme>({
 }
 
 export const createPrimitive = <T extends Theme>(
-  defaultComponent: React.ReactType,
+  defaultComponent: React.ElementType,
   defaultCssOrMergeProps?: ValueOrMergeWith<PrimitiveProps<T>>
 ) => {
   const mergeProps =
@@ -69,7 +68,7 @@ type ExtendedPrimitiveProps<T extends Theme> = {
 }
 
 export const extendPrimitive = <T extends Theme>(
-  Primitive: React.ReactType<ExtendedPrimitiveProps<T>>,
+  Primitive: React.ElementType<ExtendedPrimitiveProps<T>>,
   defaultCssOrMergeProps?: ValueOrMergeWith<ExtendedPrimitiveProps<T>>
 ) => {
   const mergeProps =

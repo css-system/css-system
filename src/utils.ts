@@ -1,4 +1,4 @@
-import {unitlessCssProperties} from "./constants"
+import { CSS_SYSTEM_CONFIG } from "./config"
 
 export const get = (obj: Object, path: string | number, def?: any) => {
   let result = obj
@@ -22,26 +22,6 @@ export const positiveOrNegative = (scale, value) => {
   return n * -1
 }
 
-export const transforms = [
-  "margin",
-  "marginTop",
-  "marginRight",
-  "marginBottom",
-  "marginLeft",
-  "marginX",
-  "marginY",
-  "top",
-  "bottom",
-  "left",
-  "right",
-].reduce(
-  (acc, curr) => ({
-    ...acc,
-    [curr]: positiveOrNegative,
-  }),
-  {}
-)
-
 export const addUnitIfNeeded = (name: string, value: unknown): string => {
   if (value == null || typeof value === "boolean" || value === "") {
     return ""
@@ -50,7 +30,7 @@ export const addUnitIfNeeded = (name: string, value: unknown): string => {
   if (
     typeof value === "number" &&
     value !== 0 &&
-    !(name in unitlessCssProperties)
+    !(name in CSS_SYSTEM_CONFIG.unitlessProperties)
   ) {
     return `${value}px` // Presumes implicit 'px' suffix for unitless numbers
   }

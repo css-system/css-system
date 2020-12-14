@@ -1,11 +1,6 @@
-import {CSSObject} from "./types"
-import {camelCaseToSnakeCase, addUnitIfNeeded} from "./utils"
+import {addUnitIfNeeded, camelCaseToSnakeCase} from "./utils"
 
-const populateRulesObject = (
-  className: string,
-  cssObject: CSSObject,
-  acc: any
-) => {
+const populateRulesObject = (className: string, cssObject: any, acc: any) => {
   Object.keys(cssObject).forEach((key) => {
     const value = cssObject[key]
     if (typeof value === "string" || typeof value === "number") {
@@ -15,7 +10,7 @@ const populateRulesObject = (
       acc[className] +=
         camelCaseToSnakeCase(key) + ":" + addUnitIfNeeded(key, value) + ";"
     } else if (typeof value === "object") {
-      if (key.startsWith("@media")) {
+      if (key.startsWith("@media") || key.startsWith("@supports")) {
         if (!acc[key]) {
           acc[key] = {}
         }
@@ -27,7 +22,7 @@ const populateRulesObject = (
   })
 }
 
-export const computeRulesObject = (cssObject: CSSObject): any => {
+export const computeRulesObject = (cssObject: any): any => {
   const rulesObject = {}
   populateRulesObject("&", cssObject, rulesObject)
   return rulesObject

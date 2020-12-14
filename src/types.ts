@@ -6,7 +6,6 @@
 // TypeScript Version: 3.1
 
 import * as CSS from "csstype"
-import {DefaultTheme} from "./themeContext"
 
 type StandardCSSProperties = CSS.PropertiesFallback<number | string>
 
