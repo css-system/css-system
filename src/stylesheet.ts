@@ -5,9 +5,7 @@ const ID_ATTRIBUTE = "data-css-system-id"
 const CREATED_IDS_ATTRIBUTE = "data-css-system-ids"
 const CREATED_IDS_SEPARATOR = " "
 
-const isDev = typeof window !== "undefined" 
-  ? false 
-  : process && process.env && process.env.NODE_ENV === "development"
+const isDev = typeof process === "object" && process.env && process.env.NODE_ENV === "development"
 
 interface StyleSheet {
   createdIds: Record<string, true>
