@@ -8,7 +8,7 @@
     "@babel/register": "7.12.1",
     "css-system": "link:..",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "react": "link:../node_modules/react",
     "react-dom": "link:../node_modules/react-dom",
     "react-scripts": "4.0.1"
